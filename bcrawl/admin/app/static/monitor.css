@@ -1,0 +1,58 @@
+ body {
+   padding-left: 0;
+   padding-right: 0;
+ }
+ #page-wrapper {
+   position: relative;
+   width: 980px;
+   /* centers the document */
+   margin: 0 auto;
+   /*
+  hides anything drawn off canvas.
+  remove overflow and height to see things drawn off canvas.
+  */
+   overflow: hidden;
+   height: 1000px;
+ }
+ /* This makes absolutely positioned elements like p, h1,
+     and some bootstrap elements placed properly. */
+ #absolute-wrapper p, #absolute-wrapper h1, #absolute-wrapper h2, #absolute-wrapper h3, #absolute-wrapper h4, #absolute-wrapper h5, #absolute-wrapper h6 {
+   margin-top: 0 !important;
+ }
+ #absolute-wrapper {
+   position: relative;
+   width: 980px;
+   margin: 0 auto;
+   height: 1px;
+ }
+ #absolute-wrapper div.div-1 {
+   width: 951px;
+ }
+ #absolute-wrapper div.div-2 {
+   position: absolute;
+   left: 20px;
+ }
+ #absolute-wrapper div.div-3 {
+   border-bottom: 1px solid #333333;
+ }
+ #absolute-wrapper div.div-4 {
+   border-bottom: 3px solid #333333;
+   height: 77px;
+   top: 20px;
+ }
+ #absolute-wrapper .div-2.div-3.div-5 {
+   width: 940px;
+   height: 159px;
+   top: 180px;
+ }
+ #absolute-wrapper .div-2.div-3.div-5 .table.table-striped.table-bordered {
+   border: 1px solid #808080;
+ }
+ #absolute-wrapper .div-2.div-3.div-6 {
+   width: 950px;
+   height: 149px;
+   top: 350px;
+ }
+ #absolute-wrapper .div-2.div-3.div-6 .table.table-striped {
+   border: 1px solid #808080;
+ }
