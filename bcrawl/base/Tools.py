@@ -14,7 +14,10 @@ class Monitor(object):
 	def close(self):
 		self.queue.close()
 
-	def query_completed(self, provider, query_id):
+	def query_sent(self, query_id):
+		self.queue.put(MonitorMsg(MonitorMsg.QUERY_SENT, MonitorMsg.OK, query_id, None)) 
+
+	def query_completed(self, query_id):
 		self.queue.put(MonitorMsg(MonitorMsg.QUERY_COMPLETED, MonitorMsg.OK, query_id, None)) 
 
 	def search_http_request(self, provider, query_id):
@@ -35,11 +38,17 @@ class Monitor(object):
 	def content_exception(self, provider, link, e):
 		self.queue.put(MonitorMsg(self.providers_map[provider], MonitorMsg.ERROR, None, str(e)))
 
-	def post_filtered(self, link):
-		self.queue.put(MonitorMsg(MonitorMsg.POST_FILTERED, MonitorMsg.OK, None, link))
+	def post_collected(self, link):
+		self.queue.put(MonitorMsg(MonitorMsg.POST_COLLECTED, MonitorMsg.OK, None, link))
 
-	def dublicate_found(self, link):
-		self.queue.put(MonitorMsg(MonitorMsg.DUBLICATE_FOUND, MonitorMsg.OK, None, link))
+	def post_dublicate_detected(self, link):
+		self.queue.put(MonitorMsg(MonitorMsg.POST_DUBLICATE_DETECTED, MonitorMsg.OK, None, link))
+
+	def post_update_detected(self, link):
+		self.queue.put(MonitorMsg(MonitorMsg.POST_UPDATE_DETECTED, MonitorMsg.OK, None, link))
+
+	def post_new_link_detected(self, link):
+		self.queue.put(MonitorMsg(MonitorMsg.POST_NEW_LINK_DETECTED, MonitorMsg.OK, None, link))
 
 	def post_persisted(self, post_id, link):
 		self.queue.put(MonitorMsg(MonitorMsg.POST_PERSISTED, MonitorMsg.OK, post_id, link))

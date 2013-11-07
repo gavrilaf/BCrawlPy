@@ -24,8 +24,9 @@ def element_attr_value(root, tag, attr):
 class Searcher(object):
 	DEF_NUMDOC = 100
 
-	def __init__(self, runner_name, numdoc = DEF_NUMDOC):
+	def __init__(self, runner_name, monitor, numdoc = DEF_NUMDOC):
 		self.logger = logging.getLogger(runner_name)
+		self.monitor = monitor
 
 		self.query = ''
 		self.numdoc = numdoc
@@ -58,7 +59,10 @@ class Searcher(object):
 			p['p'] = self.page
 		
 		r = requests.get("http://blogs.yandex.ru/search.rss", params=p)
+
+		self.monitor.search_http_request(MQData.PROVIDER_YANDEX, self.query.query_id)  # Notify monitor about http request
 		self.logger.info('Searcher: (%s, %d)' % (r.url, r.status_code))
+		
 		if r.status_code != 200:
 			raise HttpError(r)
 		
@@ -123,18 +127,16 @@ class Searcher(object):
 
 class SearchBroker(object):
 
-	def __init__(self, runner_name):
+	def __init__(self, runner_name, monitor):
 		self.logger = logging.getLogger(runner_name)
-		self.searcher = Searcher(runner_name)
+		self.searcher = Searcher(runner_name, monitor)
 
-	def read_day_posts(self, query, out_queue, monitor):
+	def read_day_posts(self, query, out_queue):
 		self.logger.info("Broker got query: %s" % str(query))
 
 		total_count = 0
 
 		posts = self.searcher.start_search(query)
-
-		monitor.search_http_request(MQData.PROVIDER_YANDEX, query.id) # Notify monitor about http request
 		self.logger.info('Yandex count = %s' % self.searcher.yandex_count)
 
 		posts_count = len(posts)
@@ -144,20 +146,18 @@ class SearchBroker(object):
 			for p in posts:
 				out_queue.put(p)
 
-			self.logger.info('%s: posted %d posts' % (str(query.day), posts_count))
+			self.logger.info('%s: collected %d posts' % (str(query.day), posts_count))
 
 			posts = self.searcher.next()
 			posts_count = len(posts)
-
-			monitor.search_http_request(MQData.PROVIDER_YANDEX, query.id) # Notify monitor about http request
 			
-
-		self.logger.info('%s: Total posted %d posts' % (str(query.day), total_count))
+		self.logger.info('%s: Total collected %d posts' % (str(query.day), total_count))
 
 
 class ContentReader(object):
-	def __init__(self, runner_name):
+	def __init__(self, runner_name, monitor):
 		self.logger = logging.getLogger(runner_name)
+		self.monitor = monitor
 
 	def read_content(self, url):
 		p = {
@@ -165,7 +165,10 @@ class ContentReader(object):
 			'full' : '1'}
 
 		r = requests.get("http://blogs.yandex.ru/search.rss", params=p)
+
+		self.monitor.search_http_request(MQData.PROVIDER_YANDEX, None)  # Notify monitor about http request
 		self.logger.info('Yandex.ContentReader: (%s, %d)' % (r.url, r.status_code))
+
 		if r.status_code != 200:
 			raise HttpError(r)
 

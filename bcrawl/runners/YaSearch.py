@@ -5,15 +5,13 @@ from bcrawl.providers import Yandex, Errors
 class Producer(MQ.BaseProducer):
 	def __init__(self):
 		super(Producer, self).__init__(Consts.Queues.QUERIES, Consts.Queues.POSTS_4_FILTER, Consts.Runners.YANDEX_SEARCHER)
-		self.broker = Yandex.SearchBroker(self.name)
-
+		
 	def process(self, p, out_queue):
 		try:
 			self.broker.read_day_posts(p, out_queue, self.monitor)
 
 			self.statuses_queue.put(MQData.DayQueryStatus(p.id, MQData.DayQueryStatus.OK))
-			self.monitor.query_completed(MQData.PROVIDER_YANDEX, p.id)
-
+			
 		except Errors.HttpError as e:
 			self.logger.error('Http error code %s on url %s' % (e.code, e.url))
 
@@ -31,8 +29,8 @@ class Producer(MQ.BaseProducer):
 
 		self.statuses_queue = MQ.BaseQueue(connection, Consts.Queues.QUERY_STATUSES, self.name)
 		self.monitor = Tools.Monitor(connection, self.name)
-		
-		
+		self.broker = Yandex.SearchBroker(self.name, self.monitor)
+				
 	def on_finish(self):
 		self.logger.info(self.name + ' is finished')
 
