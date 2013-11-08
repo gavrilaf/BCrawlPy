@@ -63,7 +63,7 @@ class BaseConsumer(BaseLoggedObj):
 							self.process(obj)
 							queue.ack()
 						else:
-							time.sleep(1)
+							self.on_idle()
 				finally:
 					self.on_finish()
 				
@@ -73,6 +73,9 @@ class BaseConsumer(BaseLoggedObj):
 		
 	def on_finish(self):
 		self.logger.info(self.name + ' is finished')
+
+	def on_idle(self):
+		time.sleep(1)
 
 	def process(self, p):
 		raise NotImplementedError("Should have implemented this") 
@@ -97,7 +100,7 @@ class BaseProducer(BaseLoggedObj):
 								self.process(obj, out_queue)
 								in_queue.ack()
 							else:
-								time.sleep(1)
+								self.on_idle()
 					finally:
 						self.on_finish()
 
@@ -106,6 +109,9 @@ class BaseProducer(BaseLoggedObj):
 
 	def on_finish(self):
 		self.logger.info(self.name + ' is finished')
+
+	def on_idle(self):
+		time.sleep(1)
 
 	def process(self, p, out_queue):
 		raise NotImplementedError("Should have implemented this") 

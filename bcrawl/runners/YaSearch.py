@@ -8,8 +8,7 @@ class Producer(MQ.BaseProducer):
 		
 	def process(self, p, out_queue):
 		try:
-			self.broker.read_day_posts(p, out_queue, self.monitor)
-
+			self.broker.read_day_posts(p, out_queue)
 			self.statuses_queue.put(MQData.DayQueryStatus(p.id, MQData.DayQueryStatus.OK))
 			
 		except Errors.HttpError as e:
