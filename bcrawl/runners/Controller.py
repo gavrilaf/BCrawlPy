@@ -13,7 +13,7 @@ class Runner(MQ.BaseConsumer):
 
 	def process(self, p):
 		self.logger.info("Got query status: %s", str(p))
-
+		
 		self.monitor.query_completed(p.id)
 
 	def on_start(self, conn):
