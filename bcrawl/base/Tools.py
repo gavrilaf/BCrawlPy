@@ -15,10 +15,10 @@ class Monitor(object):
 		self.queue.close()
 
 	def query_sent(self, query_id):
-		self.queue.put(MonitorMsg(MonitorMsg.DAY_QUERY_SENT, MonitorMsg.OK, query_id, None)) 
+		self.queue.put(MonitorMsg(MonitorMsg.QUERY_SENT, MonitorMsg.OK, query_id, None)) 
 
 	def query_completed(self, query_id):
-		self.queue.put(MonitorMsg(MonitorMsg.DAY_QUERY_COMPLETED, MonitorMsg.OK, query_id, None)) 
+		self.queue.put(MonitorMsg(MonitorMsg.QUERY_COMPLETED, MonitorMsg.OK, query_id, None)) 
 
 	def search_http_request(self, provider, query_id):
 		self.queue.put(MonitorMsg(MonitorMsg.HTTP_SEARCH_YANDEX, MonitorMsg.OK, query_id, None)) # now only Yandex search is supported

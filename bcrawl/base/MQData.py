@@ -49,8 +49,8 @@ class DayQueryStatus(object):
 		return '{%d, %d}' % (self.id, self.status)
 
 class MonitorMsg(object):
-	DAY_QUERY_SENT = 1
-	DAY_QUERY_COMPLETED = 2
+	QUERY_SENT = 1
+	QUERY_COMPLETED = 2
 
 	HTTP_SEARCH_YANDEX = 3
 	HTTP_CONTENT_YANDEX = 4
@@ -59,7 +59,7 @@ class MonitorMsg(object):
 
 	POST_COLLECTED = 7
 	POST_DUBLICATE_DETECTED = 8
-	POST_UPDARE_DETECTED = 9
+	POST_UPDATE_DETECTED = 9
 	POST_NEW_LINK_DETECTED = 10
 	POST_SPAM_DETECTED = 11
 	
