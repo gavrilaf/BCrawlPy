@@ -3,7 +3,8 @@
 
 import unittest
 import datetime
-from bcrawl.base import Consts, MQData
+import MockQueue
+from bcrawl.base import Consts, MQData, Tools
 from bcrawl.providers import Yandex
 
 class MockQueue(object):
@@ -17,11 +18,14 @@ class MockQueue(object):
 
 class YandexSearcherTests(unittest.TestCase):
 
+	def setUp(self):
+		self.monitor = Tools.Monitor(MockQueue())
+
 	def test_searcher(self):
-		searcher = Yandex.Searcher(Consts.Runners.TEST)
+		searcher = Yandex.Searcher(Consts.Runners.TEST, self.monitor)
 
 		day = datetime.date(2013, 10, 30)
-		day_query = MQData.DayQuery(1, 1234, 'путин', day)
+		day_query = MQData.DayQuery(1, 1234, u'путин', day)
 
 		posts = searcher.start_search(day_query)
 		
@@ -40,10 +44,10 @@ class YandexSearcherTests(unittest.TestCase):
 		self.assertEqual(posts[0].query_id, 1234)
 
 	def test_broker(self):
-		broker = Yandex.SearchBroker(Consts.Runners.TEST)
+		broker = Yandex.SearchBroker(Consts.Runners.TEST, self.monitor)
 
 		day = datetime.date(2013, 10, 30)
-		day_query = MQData.DayQuery(1, 1234, 'котеги', day)
+		day_query = MQData.DayQuery(1, 1234, u'котеги', day)
 
 		out_queue = MockQueue()
 		status_queue = MockQueue()

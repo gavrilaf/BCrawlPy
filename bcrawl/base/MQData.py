@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import datetime 
 from dateutil import parser
 import jsonpickle
@@ -25,7 +28,8 @@ class Post(object):
 		self.collected = datetime.datetime.utcnow()
 
 	def __str__(self):
-		return (u'{%d, %s, %s, %s, %s, %s}' % (self.query_id, self.link, self.title,  self.publish_date, self.author, self.host)).encode('utf-8')
+		return '{%d, %s, %s, %s, %s, %s}' % (self.query_id, 
+			self.link, self.title, self.publish_date, self.author, self.host)
 
 class DayQuery(object):
 	def __init__(self, id_, query_id, text, day):
@@ -35,7 +39,7 @@ class DayQuery(object):
 		self.day = day
 
 	def __str__(self):
-		return (u'{%d, %d, %s, %s}' % (self.id, self.query_id, self.text, self.day)).encode('utf-8')
+		return '{%d, %d, %s, %s}' % (self.id, self.query_id, self.text, self.day)
 
 class DayQueryStatus(object):
 	OK = 1

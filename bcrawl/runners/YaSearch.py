@@ -27,6 +27,8 @@ class Producer(MQ.BaseProducer):
 		self.logger.info(self.name + ' is started')
 
 		self.statuses_queue = MQ.BaseQueue(connection, Consts.Queues.QUERY_STATUSES, self.name)
+		self.monitor_queue =  MQ.BaseQueue(connection, Consts.Queues.MONITOR, self.name)
+
 		self.monitor = Tools.Monitor(connection, self.name)
 		self.broker = Yandex.SearchBroker(self.name, self.monitor)
 				
@@ -34,4 +36,4 @@ class Producer(MQ.BaseProducer):
 		self.logger.info(self.name + ' is finished')
 
 		self.statuses_queue.close()
-		self.monitor.close()
+		self.monitor_queue.close()

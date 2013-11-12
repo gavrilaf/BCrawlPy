@@ -20,11 +20,13 @@ class Runner(MQ.BaseConsumer):
 		self.logger.info(self.name + ' is started')
 
 		self.queries_queue = MQ.BaseQueue(conn, Consts.Queues.QUERIES, self.name)
-		self.monitor = Tools.Monitor(conn, self.name)
+		self.monitor_queue = MQ.BaseQueue(conn, Consts.Queues.MONITOR, self.name)
+		
+		self.monitor = Tools.Monitor(self.monitor_queue)
 
 	def on_finish(self):
 		self.queries_queue.close()
-		self.monitor.close()
+		self.monitor_queue.close()
 
 		self.logger.info(self.name + ' is finished')
 

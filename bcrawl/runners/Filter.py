@@ -55,7 +55,9 @@ class Producer(MQ.BaseConsumer):
 		self.lj_queue = MQ.BaseQueue(connection, Consts.Queues.POSTS_4_CONTENT_COLLECT_LJ, self.name)
 		self.vk_queue = MQ.BaseQueue(connection, Consts.Queues.POSTS_4_CONTENT_COLLECT_VK, self.name)
 
-		self.monitor = Tools.Monitor(connection, self.name)
+		self.monitor_queue = MQ.BaseQueue(connection, Consts.Queues.MONITOR, self.name)
+
+		self.monitor = Tools.Monitor(self.monitor_queue)
 		
 	def on_finish(self):
 		self.logger.info(self.name + ' is finished')
@@ -64,4 +66,4 @@ class Producer(MQ.BaseConsumer):
 		self.lj_queue.close()
 		self.vk_queue.close()
 
-		self.monitor.close()
+		self.monitor_queue.close()

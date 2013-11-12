@@ -1,12 +1,16 @@
 import unittest
-from bcrawl.base import Consts
+from MockQueue import MockQueue
+from bcrawl.base import Consts, Tools
 from bcrawl.providers import Yandex, LJ, VK, Errors
 
 
 class ContentCollectorTests(unittest.TestCase):
 
+	def setUp(self):
+		self.monitor = Tools.Monitor(MockQueue())
+
 	def test_collect_yandex(self):
-		reader = Yandex.ContentReader(Consts.Runners.TEST)
+		reader = Yandex.ContentReader(Consts.Runners.TEST, self.monitor)
 	
 		self.assertIsNotNone(reader.read_content('http://mayo.livejournal.com/463351.html'))
 		self.assertIsNone(reader.read_content('http://mayo__not_exists.livejournal.com/463351.html'))
