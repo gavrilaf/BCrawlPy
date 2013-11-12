@@ -3,7 +3,7 @@
 
 import unittest
 import datetime
-import MockQueue
+from MockQueue import MockQueue
 from bcrawl.base import Consts, MQData, Tools
 from bcrawl.providers import Yandex
 
