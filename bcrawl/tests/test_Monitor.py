@@ -1,18 +1,82 @@
 import unittest
 import datetime
-from bcrawl.db import Monitor
-from bcrawl.base.MQData import MonitorMsg
+from bcrawl.base import MQData
+from bcrawl.db.Monitor import Repository
+from bcrawl.handlers.Monitor import Sender
 
+class MockDbQueue(object):
+	def __init__(self, db):
+		self.db = db
+
+	def put(self, p):
+		self.db.store_msg(p)
 
 class MonitorTests(unittest.TestCase):
 
 	def setUp(self):
-		self.db = Monitor.Repository(db_name = 'bcrawl_test', collection_name = 'monitor_test')
+		self.db = Repository(db_name = 'bcrawl_test', collection_name = 'monitor_test')
+		self.queue = MockDbQueue(self.db)
+		self.monitor = Sender(self.queue)
 
 	def tearDown(self):
 		self.db.clear_monitor_table()
 		self.db.close()
-		self.db = None
+
 
 	def testSendQuery(self):
-		pass
+		status = self.db.status_full()
+		self.assertEqual(status['queries']['sent']['day'], 0)
+		self.assertEqual(status['queries']['completed']['all'], 0)
+
+		for i in xrange(10):
+			self.monitor.query_sent(i)
+			self.monitor.query_completed(i)
+
+		status = self.db.status_full()
+		self.assertEqual(status['queries']['sent']['day'], 10)
+		self.assertEqual(status['queries']['completed']['all'], 10)
+
+
+	def testHttpMsgs(self):
+		status = self.db.status_full()
+		self.assertEqual(status['http']['search']['yandex']['sent']['hour'], 0)
+		self.assertEqual(status['http']['search']['yandex']['error']['day'], 0)
+		self.assertEqual(status['http']['content']['yandex']['error']['day'], 0)
+		self.assertEqual(status['http']['content']['lj']['sent']['day'], 0)
+		self.assertEqual(status['http']['content']['vk']['error']['hour'], 0)
+
+		for i in xrange(3):
+			self.monitor.search_http_request(MQData.PROVIDER_YANDEX, 1)
+			self.monitor.search_http_error(MQData.PROVIDER_YANDEX, 1, 404, 'test_url')
+			self.monitor.search_exception(MQData.PROVIDER_YANDEX, 1, Exception('test'))
+			self.monitor.content_http_error(MQData.PROVIDER_YANDEX, 404, 'test_url')
+			self.monitor.content_http_request(MQData.PROVIDER_LJ, 'test_url')
+			self.monitor.content_exception(MQData.PROVIDER_VK, 'test_url', Exception('test'))
+
+		status = self.db.status_full()
+		self.assertEqual(status['http']['search']['yandex']['sent']['hour'], 3)
+		self.assertEqual(status['http']['search']['yandex']['error']['day'], 6)
+		self.assertEqual(status['http']['content']['yandex']['error']['day'], 3)
+		self.assertEqual(status['http']['content']['lj']['sent']['day'], 3)
+		self.assertEqual(status['http']['content']['vk']['error']['hour'], 3)
+
+	def testPostMsgs(self):
+		status = self.db.status_full()
+		self.assertEqual(status['post']['collected']['all'], 0)
+		self.assertEqual(status['post']['dublicate']['hour'], 0)
+		self.assertEqual(status['post']['update']['day'], 0)
+		self.assertEqual(status['post']['new_link']['all'], 0)
+		self.assertEqual(status['post']['persisted']['all'], 0)
+
+		self.monitor.post_collected('test')
+		self.monitor.post_dublicate_detected('test')
+		self.monitor.post_update_detected('test')
+		self.monitor.post_new_link_detected('test')
+		self.monitor.post_persisted(1, 'test')
+
+		status = self.db.status_full()
+		self.assertEqual(status['post']['collected']['all'], 1)
+		self.assertEqual(status['post']['dublicate']['hour'], 1)
+		self.assertEqual(status['post']['update']['day'], 1)
+		self.assertEqual(status['post']['new_link']['all'], 1)
+		self.assertEqual(status['post']['persisted']['all'], 1)
