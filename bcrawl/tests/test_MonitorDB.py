@@ -110,3 +110,17 @@ class MonitorDBTests(unittest.TestCase):
 		self.db.store_msg(msg)
 
 		self.assertEqual(self.db.yandex_search_requests(Monitor.Repository.DAY), 2)
+
+
+	def test_status_full(self):
+		status = self.db.status_full()
+
+		self.assertEqual(status['queries']['sent']['day'], 0)
+		self.assertEqual(status['queries']['completed']['all'], 0)
+
+		self.assertEqual(status['http']['search']['yandex']['sent']['hour'], 0)
+		self.assertEqual(status['http']['search']['yandex']['error']['day'], 0)
+		self.assertEqual(status['http']['content']['yandex']['error']['day'], 0)
+		self.assertEqual(status['http']['content']['lj']['sent']['day'], 0)
+		self.assertEqual(status['http']['content']['vk']['error']['hour'], 0)
+

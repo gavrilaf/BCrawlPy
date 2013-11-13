@@ -108,6 +108,110 @@ class Repository(object):
 	def posts_persisted(self, scope = ALL):
 		return self.collection.find(self.get_query('posts_persisted', True, scope)).count()
 
+	def status_full(self):
+		status = {}
+
+		status['queries'] = {
+			'sent' : { 
+				'hour' : self.queries_sent(Repository.HOUR),
+				'day' : self.queries_sent(Repository.DAY),
+				'all' : self.queries_sent()
+			},
+			'completed' : {
+				'hour' : self.queries_completed(Repository.HOUR),
+				'day' : self.queries_completed(Repository.DAY),
+				'all' : self.queries_completed()
+			}
+		}
+
+		status['http'] = {
+			'search' : {
+				'yandex' : {
+					'sent' : {
+						'hour' : self.yandex_search_requests(Repository.HOUR),
+						'day' : self.yandex_search_requests(Repository.DAY)
+					},
+					'error' : {
+						'hour' : self.yandex_search_errors(Repository.HOUR),
+						'day' : self.yandex_search_errors(Repository.DAY)
+					}
+				}
+			},
+			'content' : {
+				'yandex' : {
+					'sent' : {
+						'hour' : self.yandex_content_requests(Repository.HOUR),
+						'day' : self.yandex_content_requests(Repository.DAY)
+					},
+					'error' : {
+						'hour' : self.yandex_content_errors(Repository.HOUR),
+						'day' : self.yandex_content_errors(Repository.DAY)
+					}
+				},
+				'lj' : {
+					'sent' : {
+						'hour' : self.lj_content_requests(Repository.HOUR),
+						'day' : self.lj_content_requests(Repository.DAY)
+					},
+					'error' : {
+						'hour' : self.lj_content_errors(Repository.HOUR),
+						'day' : self.lj_content_errors(Repository.DAY)
+					}
+				},
+				'vk' : {
+					'sent' : {
+						'hour' : self.vk_content_requests(Repository.HOUR),
+						'day' : self.vk_content_requests(Repository.DAY)
+					},
+					'error' : {
+						'hour' : self.vk_content_errors(Repository.HOUR),
+						'day' : self.vk_content_errors(Repository.DAY)
+					}
+				}
+			}
+		}
+
+		status['post'] = {
+			'collected' : {
+				'hour' : self.posts_collected(Repository.HOUR),
+				'day' : self.posts_collected(Repository.DAY),
+				'all' : self.posts_collected()
+			},
+			'dublicate' : {
+				'hour' : self.posts_dublicate_detected(Repository.HOUR),
+				'day' : self.posts_dublicate_detected(Repository.DAY),
+				'all' : self.posts_dublicate_detected()
+			},
+			'update' : {
+				'hour' : self.posts_update_detected(Repository.HOUR),
+				'day' : self.posts_update_detected(Repository.DAY),
+				'all' : self.posts_update_detected()
+			},
+			'new_link' : {
+				'hour' : self.posts_new_link_detected(Repository.HOUR),
+				'day' : self.posts_new_link_detected(Repository.DAY),
+				'all' : self.posts_new_link_detected()
+			},
+			'spam' : {
+				'hour' : self.posts_spam_detected(Repository.HOUR),
+				'day' : self.posts_spam_detected(Repository.DAY),
+				'all' : self.posts_spam_detected()
+			},
+			'persisted' : {
+				'hour' : self.posts_persisted(Repository.HOUR),
+				'day' : self.posts_persisted(Repository.DAY),
+				'all' : self.posts_persisted()
+			},
+			'error' : {
+				'hour' : 0,
+				'day' : 0,
+				'all' : 0
+			}
+		}
+
+		return status
+		
+
 
 
 	

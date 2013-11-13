@@ -4,8 +4,9 @@
 import unittest
 import datetime
 from MockQueue import MockQueue
-from bcrawl.base import Consts, MQData, Tools
+from bcrawl.base import Consts, MQData
 from bcrawl.providers import Yandex
+from bcrawl.handlers import Monitor
 
 class MockQueue(object):
 	def __init__(self):
@@ -19,7 +20,7 @@ class MockQueue(object):
 class YandexSearcherTests(unittest.TestCase):
 
 	def setUp(self):
-		self.monitor = Tools.Monitor(MockQueue())
+		self.monitor = Monitor.Sender(MockQueue())
 
 	def test_searcher(self):
 		searcher = Yandex.Searcher(Consts.Runners.TEST, self.monitor)

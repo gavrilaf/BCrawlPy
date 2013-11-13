@@ -1,5 +1,6 @@
-from bcrawl.base import MQ, MQData, Consts, Tools
+from bcrawl.base import MQ, MQData, Consts
 from bcrawl.providers import Yandex, Errors
+from bcrawl.handlers import Monitor
 
 
 class Producer(MQ.BaseProducer):
@@ -29,7 +30,7 @@ class Producer(MQ.BaseProducer):
 		self.statuses_queue = MQ.BaseQueue(connection, Consts.Queues.QUERY_STATUSES, self.name)
 		self.monitor_queue =  MQ.BaseQueue(connection, Consts.Queues.MONITOR, self.name)
 
-		self.monitor = Tools.Monitor(connection, self.name)
+		self.monitor = Monitor.Sender(self.monitor_queue)
 		self.broker = Yandex.SearchBroker(self.name, self.monitor)
 				
 	def on_finish(self):

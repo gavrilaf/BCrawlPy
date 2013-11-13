@@ -1,19 +1,15 @@
-import MQ, Consts
-import MQData
-from MQData import MonitorMsg
+from bcrawl.base import MQData
+from bcrawl.base.MQData import MonitorMsg
 
-class Monitor(object):
+class Sender(object):
 	def __init__(self, queue):
-
-		self.queue = queue #MQ.BaseQueue(connection, Consts.Queues.MONITOR, runner_name)
+		self.queue = queue 
 
 		self.providers_map = {
 			MQData.PROVIDER_YANDEX : MonitorMsg.HTTP_CONTENT_YANDEX, 
 			MQData.PROVIDER_VK : MonitorMsg.HTTP_CONTENT_VK, 
 			MQData.PROVIDER_LJ : MonitorMsg.HTTP_CONTENT_LJ}
 
-	#def close(self):
-	#	self.queue.close()
 
 	def query_sent(self, query_id):
 		self.queue.put(MonitorMsg(MonitorMsg.QUERY_SENT, MonitorMsg.OK, query_id, None)) 
