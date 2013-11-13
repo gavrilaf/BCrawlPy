@@ -131,7 +131,7 @@ class SearchBroker(object):
 		self.logger = logging.getLogger(runner_name)
 		self.searcher = Searcher(runner_name, monitor)
 
-	def read_day_posts(self, query, out_queue, p):
+	def read_day_posts(self, query, out_queue):
 		self.logger.info("Broker got query: %s" % query)
 
 		total_count = 0

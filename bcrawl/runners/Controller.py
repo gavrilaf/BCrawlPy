@@ -14,7 +14,7 @@ class Runner(MQ.BaseConsumer):
 
 	def process(self, p):
 		self.logger.info("Got query status: %s", str(p))
-		if p.status == DayQueryStatus.OK:
+		if p.status == MQData.DayQueryStatus.OK:
 			self.monitor.query_completed(p.id)
 
 	def on_start(self, conn):

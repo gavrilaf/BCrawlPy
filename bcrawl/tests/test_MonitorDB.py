@@ -92,7 +92,7 @@ class MonitorDBTests(unittest.TestCase):
 		msg.timestamp = two_hours
 		self.db.store_msg(msg)
 
-		self.assertEqual(self.db.yandex_search_requests(Monitor.Repository.HOUR), 2)
+		self.assertEqual(self.db.yandex_search_requests(Monitor.SCOPE_HOUR), 2)
 
 	def test_day_requests(self):
 		self.assertEqual(self.db.yandex_search_requests(), 0)
@@ -109,7 +109,7 @@ class MonitorDBTests(unittest.TestCase):
 		msg.timestamp = two_days
 		self.db.store_msg(msg)
 
-		self.assertEqual(self.db.yandex_search_requests(Monitor.Repository.DAY), 2)
+		self.assertEqual(self.db.yandex_search_requests(Monitor.SCOPE_DAY), 2)
 
 
 	def test_status_full(self):

@@ -11,23 +11,46 @@
 
     <script src="{{ url_for('static', filename='jquery.js') }}"></script>
     <script>
-    /*  $(document).ready(function(){
-        function updateRest() {
+      $(document).ready(function(){
+        function updateMonitor() {
           $.ajax({
-            url: 'http://127.0.0.1:5000/api/v1.0/monitor',
+            url: 'http://127.0.0.1:5000/api/v1.0/cmon',
             success: function(r) {
-              $('#ya_search').text(r.monitor.yandex_search)
-              $('#ya_content').text(r.monitor.yandex_content)
-              $('#lj_content').text(r.monitor.lj_content)
-              $('#vk_content').text(r.monitor.vk_content)
-              $('#posts_found').text(r.monitor.posts_found)
-              $('#dublicate_found').text(r.monitor.dublicates)
-              $('#posts_persisted').text(r.monitor.persisted)
+              $('#query-sent-hour').text(r.monitor.queries.sent.hour)
+              $('#query-sent-day').text(r.monitor.queries.sent.day)
+              $('#query-sent-all').text(r.monitor.queries.sent.all)
+              $('#query-completed-hour').text(r.monitor.queries.completed.hour)
+              $('#query-completed-day').text(r.monitor.queries.completed.day)
+              $('#query-completed-all').text(r.monitor.queries.completed.all)
+
+              $('#ya-search-sent-day').text(r.monitor.http.search.yandex.sent.hour)
+              $('#ya-search-sent-hour').text(r.monitor.http.search.yandex.sent.day)
+              $('#ya-search-error-day').text(r.monitor.http.search.yandex.error.hour)
+              $('#ya-search-error-hour').text(r.monitor.http.search.yandex.error.day)
+
+              $('#ya-content-sent-day').text(r.monitor.http.content.yandex.sent.hour)
+              $('#ya-content-sent-hour').text(r.monitor.http.content.yandex.sent.day)
+              $('#ya-content-error-day').text(r.monitor.http.content.yandex.error.hour)
+              $('#ya-content-error-hour').text(r.monitor.http.content.yandex.error.day)
+
+              $('#lj-content-sent-day').text(r.monitor.http.content.lj.sent.hour)
+              $('#lj-content-sent-hour').text(r.monitor.http.content.lj.sent.day)
+              $('#lj-content-error-day').text(r.monitor.http.content.lj.error.hour)
+              $('#lj-content-error-hour').text(r.monitor.http.content.lj.error.day)
+
+              $('#vk-content-sent-day').text(r.monitor.http.content.vk.sent.hour)
+              $('#vk-content-sent-hour').text(r.monitor.http.content.vk.sent.day)
+              $('#vk-content-error-day').text(r.monitor.http.content.vk.error.hour)
+              $('#vk-content-error-hour').text(r.monitor.http.content.vk.error.day)
+
+              $('#post-collected-hour').text(r.monitor.post.collected.hour)
+              $('#post-collected-day').text(r.monitor.post.collected.day)
+              $('#post-collected-all').text(r.monitor.post.collected.all)
             }
           });
         } 
-        window.restUpdateInterval = setInterval(updateRest, 1000);
-      })*/
+        window.updateInterval = setInterval(updateMonitor, 5000);
+      })
     </script>
     <title>Monitor</title>
   </head>
@@ -59,15 +82,15 @@
               </tr>
               <tr>
                 <td class="text-bold">Собрано</td>
-                <td id="query-collected-hour">N/A</td>
-                <td id="query-collected-day">N/A</td>
-                <td id="query-collected-all">N/A</td>
+                <td id="query-completed-hour">N/A</td>
+                <td id="query-completed-day">N/A</td>
+                <td id="query-completed-all">N/A</td>
               </tr>
               <tr>
                 <td class="text-bold text-red">Ошибки</td>
-                <td id="query-errors-hour" class="text-red">N/A</td>
-                <td id="query-errors-days" class="text-red">N/A</td>
-                <td id="query-errors-all" class="text-red">N/A</td>
+                <td id="query-error-hour" class="text-red">N/A</td>
+                <td id="query-error-days" class="text-red">N/A</td>
+                <td id="query-error-all" class="text-red">N/A</td>
               </tr>
             </tbody>
           </table>
@@ -93,8 +116,8 @@
                     </tr>
                     <tr>
                       <td class="text-bold text-red">Ошибки</td>
-                      <td id="ya-search-errors-day" class="text-red">N/A</td>
-                      <td id="ya-search-errors-hour" class="text-red">N/A</td>
+                      <td id="ya-search-error-day" class="text-red">N/A</td>
+                      <td id="ya-search-error-hour" class="text-red">N/A</td>
                     </tr>
                   </tbody>
                 </table>
@@ -116,8 +139,8 @@
                     </tr>
                     <tr>
                       <td class="text-bold text-red">Ошибки</td>
-                      <td id="ya-content-errors-day" class="text-red">N/A</td>
-                      <td id="ya-content-errors-hour" class="text-red">N/A</td>
+                      <td id="ya-content-error-day" class="text-red">N/A</td>
+                      <td id="ya-content-error-hour" class="text-red">N/A</td>
                     </tr>
                   </tbody>
                 </table>
@@ -143,8 +166,8 @@
                     </tr>
                     <tr>
                       <td class="text-bold text-red">Ошибки</td>
-                      <td id="lj-content-errors-day" class="text-red">N/A</td>
-                      <td id="lj-content-errors-hour" class="text-red">N/A</td>
+                      <td id="lj-content-error-day" class="text-red">N/A</td>
+                      <td id="lj-content-error-hour" class="text-red">N/A</td>
                     </tr>
                   </tbody>
                 </table>
@@ -166,8 +189,8 @@
                     </tr>
                     <tr>
                       <td class="text-bold text-red">Ошибки</td>
-                      <td id="vk-content-errors-day" class="text-red">N/A</td>
-                      <td id="vk-content-errors-hour" class="text-red">N/A</td>
+                      <td id="vk-content-error-day" class="text-red">N/A</td>
+                      <td id="vk-content-error-hour" class="text-red">N/A</td>
                     </tr>
                   </tbody>
                 </table>
@@ -225,9 +248,9 @@
               </tr>
               <tr>
                 <td class="text-bold text-red">Ошибки</td>
-                <td class="text-red" id="post-errors-hour">N/A</td>
-                <td class="text-red" id="post-errors-day">N/A</td>
-                <td class="text-red" id="post-errors-all">N/A</td>
+                <td class="text-red" id="post-error-hour">N/A</td>
+                <td class="text-red" id="post-error-day">N/A</td>
+                <td class="text-red" id="post-error-all">N/A</td>
               </tr>
             </tbody>
           </table>

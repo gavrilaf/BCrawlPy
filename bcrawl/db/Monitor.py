@@ -1,19 +1,13 @@
 import datetime
+import copy
 from bcrawl.base.MQData import MonitorMsg
 from pymongo import MongoClient
 
-class Repository(object):
-	ALL = 1
-	HOUR = 2
-	DAY = 3
+SCOPE_ALL = 1
+SCOPE_HOUR = 2
+SCOPE_DAY = 3
 
-	POST_COLLECTED = 7
-	POST_DUBLICATE_DETECTED = 8
-	POST_UPDATE_DETECTED = 9
-	POST_NEW_LINK_DETECTED = 10
-	POST_SPAM_DETECTED = 11
-	
-	POST_PERSISTED = 12
+class Repository(object):
 
 	def __init__(self, db_name = 'bcrawl', collection_name = 'monitor'):
 		self.client = MongoClient()
@@ -43,69 +37,70 @@ class Repository(object):
 		self.collection.insert(msg.mongo_rep())
 
 	def get_query(self, name, success, scope):
-		query = self.queries[name]
+		query = copy.deepcopy(self.queries[name])
+
 		if success:
 			query['status'] = MonitorMsg.OK
 		else:
 			query['status'] = MonitorMsg.ERROR
 
-		if scope == Repository.DAY:
+		if scope == SCOPE_DAY:
 			t = datetime.datetime.utcnow() - datetime.timedelta(days = 1)
 			query.update({"timestamp": {"$gte": t}})
-		elif scope == Repository.HOUR:
+		elif scope == SCOPE_HOUR:
 			t = datetime.datetime.utcnow() - datetime.timedelta(hours = 1)
 			query.update({"timestamp": {"$gte": t}})
-		
-		return self.queries[name]
 
-	def yandex_search_requests(self, scope = ALL):
+		return query
+
+	def yandex_search_requests(self, scope = SCOPE_ALL):
 		return self.collection.find(self.get_query('yandex_search', True, scope)).count()
 		
-	def yandex_content_requests(self, scope = ALL):
+	def yandex_content_requests(self, scope = SCOPE_ALL):
 		return self.collection.find(self.get_query('yandex_content', True, scope)).count()
 
-	def lj_content_requests(self, scope = ALL):
+	def lj_content_requests(self, scope = SCOPE_ALL):
 		return self.collection.find(self.get_query('lj_content', True, scope)).count()
 
-	def vk_content_requests(self, scope = ALL):
+	def vk_content_requests(self, scope = SCOPE_ALL):
 		return self.collection.find(self.get_query('vk_content', True, scope)).count()
 
-	def yandex_search_errors(self, scope = ALL):
+	def yandex_search_errors(self, scope = SCOPE_ALL):
 		return self.collection.find(self.get_query('yandex_search', False, scope)).count()
 		
-	def yandex_content_errors(self, scope = ALL):
+	def yandex_content_errors(self, scope = SCOPE_ALL):
 		return self.collection.find(self.get_query('yandex_content', False, scope)).count()
 
-	def lj_content_errors(self, scope = ALL):
+	def lj_content_errors(self, scope = SCOPE_ALL):
 		return self.collection.find(self.get_query('lj_content', False, scope)).count()
 
-	def vk_content_errors(self, scope = ALL):
+	def vk_content_errors(self, scope = SCOPE_ALL):
 		return self.collection.find(self.get_query('vk_content', False, scope)).count()
 
 
-	def queries_sent(self, scope = ALL):
+	def queries_sent(self, scope = SCOPE_ALL):
 		return self.collection.find(self.get_query('queries_sent', True, scope)).count()
 
-	def queries_completed(self, scope = ALL):
+	def queries_completed(self, scope = SCOPE_ALL):
 		return self.collection.find(self.get_query('queries_completed', True, scope)).count()
 
 	
-	def posts_collected(self, scope = ALL):
+	def posts_collected(self, scope = SCOPE_ALL):
 		return self.collection.find(self.get_query('posts_collected', True, scope)).count()
 
-	def posts_update_detected(self, scope = ALL):
+	def posts_update_detected(self, scope = SCOPE_ALL):
 		return self.collection.find(self.get_query('posts_update', True, scope)).count()
 
-	def posts_dublicate_detected(self, scope = ALL):
+	def posts_dublicate_detected(self, scope = SCOPE_ALL):
 		return self.collection.find(self.get_query('posts_dublicate', True, scope)).count()
 
-	def posts_new_link_detected(self, scope = ALL):
+	def posts_new_link_detected(self, scope = SCOPE_ALL):
 		return self.collection.find(self.get_query('posts_new_link', True, scope)).count()
 
-	def posts_spam_detected(self, scope = ALL):
+	def posts_spam_detected(self, scope = SCOPE_ALL):
 		return self.collection.find(self.get_query('posts_spam', True, scope)).count()
 
-	def posts_persisted(self, scope = ALL):
+	def posts_persisted(self, scope = SCOPE_ALL):
 		return self.collection.find(self.get_query('posts_persisted', True, scope)).count()
 
 	def status_full(self):
@@ -113,13 +108,13 @@ class Repository(object):
 
 		status['queries'] = {
 			'sent' : { 
-				'hour' : self.queries_sent(Repository.HOUR),
-				'day' : self.queries_sent(Repository.DAY),
+				'hour' : self.queries_sent(SCOPE_HOUR),
+				'day' : self.queries_sent(SCOPE_DAY),
 				'all' : self.queries_sent()
 			},
 			'completed' : {
-				'hour' : self.queries_completed(Repository.HOUR),
-				'day' : self.queries_completed(Repository.DAY),
+				'hour' : self.queries_completed(SCOPE_HOUR),
+				'day' : self.queries_completed(SCOPE_DAY),
 				'all' : self.queries_completed()
 			}
 		}
@@ -128,44 +123,44 @@ class Repository(object):
 			'search' : {
 				'yandex' : {
 					'sent' : {
-						'hour' : self.yandex_search_requests(Repository.HOUR),
-						'day' : self.yandex_search_requests(Repository.DAY)
+						'hour' : self.yandex_search_requests(SCOPE_HOUR),
+						'day' : self.yandex_search_requests(SCOPE_DAY)
 					},
 					'error' : {
-						'hour' : self.yandex_search_errors(Repository.HOUR),
-						'day' : self.yandex_search_errors(Repository.DAY)
+						'hour' : self.yandex_search_errors(SCOPE_HOUR),
+						'day' : self.yandex_search_errors(SCOPE_DAY)
 					}
 				}
 			},
 			'content' : {
 				'yandex' : {
 					'sent' : {
-						'hour' : self.yandex_content_requests(Repository.HOUR),
-						'day' : self.yandex_content_requests(Repository.DAY)
+						'hour' : self.yandex_content_requests(SCOPE_HOUR),
+						'day' : self.yandex_content_requests(SCOPE_DAY)
 					},
 					'error' : {
-						'hour' : self.yandex_content_errors(Repository.HOUR),
-						'day' : self.yandex_content_errors(Repository.DAY)
+						'hour' : self.yandex_content_errors(SCOPE_HOUR),
+						'day' : self.yandex_content_errors(SCOPE_DAY)
 					}
 				},
 				'lj' : {
 					'sent' : {
-						'hour' : self.lj_content_requests(Repository.HOUR),
-						'day' : self.lj_content_requests(Repository.DAY)
+						'hour' : self.lj_content_requests(SCOPE_HOUR),
+						'day' : self.lj_content_requests(SCOPE_DAY)
 					},
 					'error' : {
-						'hour' : self.lj_content_errors(Repository.HOUR),
-						'day' : self.lj_content_errors(Repository.DAY)
+						'hour' : self.lj_content_errors(SCOPE_HOUR),
+						'day' : self.lj_content_errors(SCOPE_DAY)
 					}
 				},
 				'vk' : {
 					'sent' : {
-						'hour' : self.vk_content_requests(Repository.HOUR),
-						'day' : self.vk_content_requests(Repository.DAY)
+						'hour' : self.vk_content_requests(SCOPE_HOUR),
+						'day' : self.vk_content_requests(SCOPE_DAY)
 					},
 					'error' : {
-						'hour' : self.vk_content_errors(Repository.HOUR),
-						'day' : self.vk_content_errors(Repository.DAY)
+						'hour' : self.vk_content_errors(SCOPE_HOUR),
+						'day' : self.vk_content_errors(SCOPE_DAY)
 					}
 				}
 			}
@@ -173,33 +168,33 @@ class Repository(object):
 
 		status['post'] = {
 			'collected' : {
-				'hour' : self.posts_collected(Repository.HOUR),
-				'day' : self.posts_collected(Repository.DAY),
+				'hour' : self.posts_collected(SCOPE_HOUR),
+				'day' : self.posts_collected(SCOPE_DAY),
 				'all' : self.posts_collected()
 			},
 			'dublicate' : {
-				'hour' : self.posts_dublicate_detected(Repository.HOUR),
-				'day' : self.posts_dublicate_detected(Repository.DAY),
+				'hour' : self.posts_dublicate_detected(SCOPE_HOUR),
+				'day' : self.posts_dublicate_detected(SCOPE_DAY),
 				'all' : self.posts_dublicate_detected()
 			},
 			'update' : {
-				'hour' : self.posts_update_detected(Repository.HOUR),
-				'day' : self.posts_update_detected(Repository.DAY),
+				'hour' : self.posts_update_detected(SCOPE_HOUR),
+				'day' : self.posts_update_detected(SCOPE_DAY),
 				'all' : self.posts_update_detected()
 			},
 			'new_link' : {
-				'hour' : self.posts_new_link_detected(Repository.HOUR),
-				'day' : self.posts_new_link_detected(Repository.DAY),
+				'hour' : self.posts_new_link_detected(SCOPE_HOUR),
+				'day' : self.posts_new_link_detected(SCOPE_DAY),
 				'all' : self.posts_new_link_detected()
 			},
 			'spam' : {
-				'hour' : self.posts_spam_detected(Repository.HOUR),
-				'day' : self.posts_spam_detected(Repository.DAY),
+				'hour' : self.posts_spam_detected(SCOPE_HOUR),
+				'day' : self.posts_spam_detected(SCOPE_DAY),
 				'all' : self.posts_spam_detected()
 			},
 			'persisted' : {
-				'hour' : self.posts_persisted(Repository.HOUR),
-				'day' : self.posts_persisted(Repository.DAY),
+				'hour' : self.posts_persisted(SCOPE_HOUR),
+				'day' : self.posts_persisted(SCOPE_DAY),
 				'all' : self.posts_persisted()
 			},
 			'error' : {

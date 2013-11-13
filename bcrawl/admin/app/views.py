@@ -1,29 +1,19 @@
 from flask import render_template, jsonify
 from app import app
-
-monitor_values = {
-	'yandex_search' : 10, 
-	'yandex_content' : 20, 
-	'lj_content' : 25, 
-	'vk_content' : 21,
-	'posts_found' : 122,
-	'dublicates' : 20,
-	'filtered' : 100,
-	'persisted' : 102}
+from contextlib import closing
+from bcrawl.db import Monitor
 
 
 
-def get_monitor_values():
-	for k in monitor_values.iterkeys():
-		monitor_values[k] += 1
-
-	return monitor_values	
+def get_cmon_values():
+	with closing(Monitor.Repository()) as db:
+		return db.status_full()
 
 
-@app.route('/api/v1.0/monitor', methods = ['GET'])
+@app.route('/api/v1.0/cmon', methods = ['GET'])
 def get_tasks():
-    return jsonify( { 'monitor': get_monitor_values() } )
+    return jsonify({'monitor' : get_cmon_values()})
 
-@app.route('/monitor')
+@app.route('/cmon')
 def monitor():
-    return render_template("monitor.html", monitor = get_monitor_values())
+    return render_template("cmon.html", monitor=get_cmon_values())
