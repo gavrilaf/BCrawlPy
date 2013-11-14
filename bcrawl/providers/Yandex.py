@@ -129,6 +129,7 @@ class SearchBroker(object):
 
 	def __init__(self, runner_name, monitor):
 		self.logger = logging.getLogger(runner_name)
+		self.monitor = monitor
 		self.searcher = Searcher(runner_name, monitor)
 
 	def read_day_posts(self, query, out_queue):
@@ -144,7 +145,8 @@ class SearchBroker(object):
 			total_count += posts_count
 				
 			for p in posts:
-				out_queue.put(p) # TODO: Add Monitor notification 
+				out_queue.put(p) 
+				self.monitor.post_collected(p.link)
 
 			self.logger.info('%s: collected %d posts' % (str(query.day), posts_count))
 

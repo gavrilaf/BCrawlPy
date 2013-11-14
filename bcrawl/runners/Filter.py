@@ -26,8 +26,6 @@ class Producer(MQ.BaseConsumer):
 		p.host = self.detect_blog_host(p)
 		self.route_post(p)
 
-		self.monitor.post_filtered(p.link)
-
 	def is_post_dublicate(self, post):
 		return False
 

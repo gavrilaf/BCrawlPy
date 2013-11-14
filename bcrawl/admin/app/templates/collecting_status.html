@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap/css/bootstrap.css') }}">
+    <script src="{{ url_for('static', filename='jquery.js') }}"></script>
+
+</head>
+<body>
+<div class="navbar">
+    <div class="navbar-inner">
+        <a class="brand" href="#">BCrawl monitor</a>
+        <ul class="nav">
+            <li><a href="/status/collecting">Состояние сбора</a></li>
+            <li class="active"><a href="#">Статус сбора</a></li>
+            <li><a href="/status/server">Состояние сервера</a></li>
+        </ul>
+    </div>
+</div>
+<div class="container">
+
+    <h3>Статус сбора</h3>
+    <hr>
+</div>
+</body>
+</html>

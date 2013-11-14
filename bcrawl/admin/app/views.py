@@ -14,6 +14,14 @@ def get_cmon_values():
 def get_tasks():
     return jsonify({'monitor' : get_cmon_values()})
 
-@app.route('/cmon')
-def monitor():
-    return render_template("cmon.html", monitor=get_cmon_values())
+@app.route('/status/collecting')
+def collecting_status():
+    return render_template("collecting_mon.html", monitor=get_cmon_values())
+
+@app.route('/status/queries')
+def queries_status():
+    return render_template("collecting_status.html")
+
+@app.route('/status/server')
+def server_status():
+    return render_template("server_mon.html")
