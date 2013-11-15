@@ -1,8 +1,8 @@
 import unittest
 import datetime
 from bcrawl.base import MQData
-from bcrawl.db.Monitor import Repository
-from bcrawl.handlers.Monitor import Sender
+from bcrawl.monitor import MonDB
+from bcrawl.monitor import MonSender
 
 class MockDbQueue(object):
 	def __init__(self, db):
@@ -14,9 +14,9 @@ class MockDbQueue(object):
 class MonitorTests(unittest.TestCase):
 
 	def setUp(self):
-		self.db = Repository(db_name = 'bcrawl_test', collection_name = 'monitor_test')
+		self.db = MonDB.Repository(db_name = 'bcrawl_test', collection_name = 'monitor_test')
 		self.queue = MockDbQueue(self.db)
-		self.monitor = Sender(self.queue)
+		self.monitor = MonSender.Sender(self.queue)
 
 	def tearDown(self):
 		self.db.clear_monitor_table()

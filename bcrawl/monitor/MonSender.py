@@ -2,6 +2,9 @@ from bcrawl.base import MQData
 from bcrawl.base.MQData import MonitorMsg
 
 class Sender(object):
+	"""
+		Helper class for sending monitoring messages.
+	"""
 	def __init__(self, queue):
 		self.queue = queue 
 

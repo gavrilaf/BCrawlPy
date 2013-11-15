@@ -1,14 +1,14 @@
 import unittest
-from MockQueue import MockQueue
 from bcrawl.base import Consts
 from bcrawl.providers import Yandex, LJ, VK, Errors
-from bcrawl.handlers import Monitor
+from bcrawl.monitor import MonSender
+from MockQueue import MockQueue
 
 
 class ContentCollectorTests(unittest.TestCase):
 
 	def setUp(self):
-		self.monitor = Monitor.Sender(MockQueue())
+		self.monitor = MonSender.Sender(MockQueue())
 
 	def test_collect_yandex(self):
 		reader = Yandex.ContentReader(Consts.Runners.TEST, self.monitor)

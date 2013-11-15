@@ -1,13 +1,13 @@
 import unittest
 import datetime
-from bcrawl.db import Monitor
+from bcrawl.monitor import MonDB
 from bcrawl.base.MQData import MonitorMsg
 
 
 class MonitorDBTests(unittest.TestCase):
 
 	def setUp(self):
-		self.db = Monitor.Repository(db_name = 'bcrawl_test', collection_name = 'monitor_test')
+		self.db = MonDB.Repository(db_name = 'bcrawl_test', collection_name = 'monitor_test')
 
 	def tearDown(self):
 		self.db.clear_monitor_table()
@@ -92,7 +92,7 @@ class MonitorDBTests(unittest.TestCase):
 		msg.timestamp = two_hours
 		self.db.store_msg(msg)
 
-		self.assertEqual(self.db.yandex_search_requests(Monitor.SCOPE_HOUR), 2)
+		self.assertEqual(self.db.yandex_search_requests(MonDB.SCOPE_HOUR), 2)
 
 	def test_day_requests(self):
 		self.assertEqual(self.db.yandex_search_requests(), 0)
@@ -109,7 +109,7 @@ class MonitorDBTests(unittest.TestCase):
 		msg.timestamp = two_days
 		self.db.store_msg(msg)
 
-		self.assertEqual(self.db.yandex_search_requests(Monitor.SCOPE_DAY), 2)
+		self.assertEqual(self.db.yandex_search_requests(MonDB.SCOPE_DAY), 2)
 
 
 	def test_status_full(self):

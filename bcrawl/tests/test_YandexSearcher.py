@@ -6,7 +6,7 @@ import datetime
 from MockQueue import MockQueue
 from bcrawl.base import Consts, MQData
 from bcrawl.providers import Yandex
-from bcrawl.handlers import Monitor
+from bcrawl.monitor import MonSender
 
 class MockQueue(object):
 	def __init__(self):
@@ -20,7 +20,7 @@ class MockQueue(object):
 class YandexSearcherTests(unittest.TestCase):
 
 	def setUp(self):
-		self.monitor = Monitor.Sender(MockQueue())
+		self.monitor = MonSender.Sender(MockQueue())
 
 	def test_searcher(self):
 		searcher = Yandex.Searcher(Consts.Runners.TEST, self.monitor)
@@ -53,7 +53,7 @@ class YandexSearcherTests(unittest.TestCase):
 		out_queue = MockQueue()
 		status_queue = MockQueue()
 
-		broker.read_day_posts(day_query, out_queue, status_queue)
+		broker.read_day_posts(day_query, out_queue)
 		
 		self.assertIsNotNone(out_queue.lst)	
 		self.assertTrue(len(out_queue.lst) > 0)

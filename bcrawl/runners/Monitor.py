@@ -1,8 +1,8 @@
-from bcrawl.base import MQ, Consts
-from bcrawl.db import Monitor
+from bcrawl.base import MQ
+from bcrawl.base import Consts
+from bcrawl.monitor import MonDB
 
-
-class Consumer(MQ.BaseConsumer):
+class Runner(MQ.BaseConsumer):
 	def __init__(self):
 		super(Consumer, self).__init__(Consts.Queues.MONITOR, Consts.Runners.MONITOR)
 
@@ -12,7 +12,7 @@ class Consumer(MQ.BaseConsumer):
 
 	def on_start(self, conn):
 		self.logger.info(self.name + ' is started')
-		self.repository = Monitor.Repository()
+		self.repository = MonDB.Repository()
 
 	def on_finish(self):
 		self.repository.close()

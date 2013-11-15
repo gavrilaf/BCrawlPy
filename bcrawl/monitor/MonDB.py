@@ -1,14 +1,17 @@
 import datetime
 import copy
-from bcrawl.base.MQData import MonitorMsg
 from pymongo import MongoClient
+from bcrawl.base.MQData import MonitorMsg
 
 SCOPE_ALL = 1
 SCOPE_HOUR = 2
 SCOPE_DAY = 3
 
 class Repository(object):
-
+	""" 
+		Interface to monitor database.
+		Used from nonitor runner and monitor web.
+	"""
 	def __init__(self, db_name = 'bcrawl', collection_name = 'monitor'):
 		self.client = MongoClient()
 		self.db = self.client[db_name]
@@ -205,8 +208,3 @@ class Repository(object):
 		}
 
 		return status
-		
-
-
-
-	
