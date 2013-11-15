@@ -4,7 +4,7 @@
 import datetime
 import time
 from bcrawl.base import MQ, MQData, Consts
-from bcrawl.handlers import Monitor
+from bcrawl.monitor import MonSender
 
 class Runner(MQ.BaseConsumer):
 	def __init__(self):
@@ -23,7 +23,7 @@ class Runner(MQ.BaseConsumer):
 		self.queries_queue = MQ.BaseQueue(conn, Consts.Queues.QUERIES, self.name)
 		self.monitor_queue = MQ.BaseQueue(conn, Consts.Queues.MONITOR, self.name)
 		
-		self.monitor = Monitor.Sender(self.monitor_queue)
+		self.monitor = MonSender.Sender(self.monitor_queue)
 
 	def on_finish(self):
 		self.queries_queue.close()

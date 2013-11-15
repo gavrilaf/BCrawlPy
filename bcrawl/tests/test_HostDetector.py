@@ -1,5 +1,5 @@
 import unittest
-from bcrawl.handlers import BlogHost
+from bcrawl.router import BlogHost
 
 
 class HostDetectorTests(unittest.TestCase):

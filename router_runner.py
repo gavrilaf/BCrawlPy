@@ -1,7 +1,7 @@
 import logging.config
-from bcrawl.runners import Filter
+from bcrawl.runners import Router
 
 if __name__ == '__main__':
 	logging.config.fileConfig("logging.conf")
-	p = Filter.Producer()
+	p = Router.Runner()
 	p.run()

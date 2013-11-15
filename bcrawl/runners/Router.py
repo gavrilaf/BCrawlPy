@@ -1,10 +1,14 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from bcrawl.base import MQ, Consts
-from bcrawl.handlers import BlogHost, Monitor
+from bcrawl.router import BlogHost
+from bcrawl.monitor import MonSender
 
 
-class Producer(MQ.BaseConsumer):
+class Runner(MQ.BaseConsumer):
 	def __init__(self):
-		super(Producer, self).__init__(Consts.Queues.POSTS_4_FILTER, Consts.Runners.FILTER)
+		super(Runner, self).__init__(Consts.Queues.POSTS_4_FILTER, Consts.Runners.FILTER)
 
 		self.host_detector = BlogHost.Detector()
 
@@ -13,7 +17,7 @@ class Producer(MQ.BaseConsumer):
 		self.vk_queue = None
 
 	def process(self, p):
-		self.logger.info('Post for filter: ' + str(p))
+		self.logger.info('Router: %s' % p.link)
 		
 		is_dublicate = self.is_post_dublicate(p)
 		if (is_dublicate):
@@ -55,7 +59,7 @@ class Producer(MQ.BaseConsumer):
 
 		self.monitor_queue = MQ.BaseQueue(connection, Consts.Queues.MONITOR, self.name)
 
-		self.monitor = Monitor.Sender(self.monitor_queue)
+		self.monitor = MonSender.Sender(self.monitor_queue)
 		
 	def on_finish(self):
 		self.logger.info(self.name + ' is finished')
