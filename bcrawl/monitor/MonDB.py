@@ -33,7 +33,7 @@ class Repository(object):
 	def close(self):
 		self.client.close()
 
-	def clear_monitor_table(self):
+	def clear_table(self):
 		self.collection.remove()
 
 	def store_msg(self, msg):

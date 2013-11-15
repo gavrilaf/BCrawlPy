@@ -19,7 +19,7 @@ class MonitorTests(unittest.TestCase):
 		self.monitor = MonSender.Sender(self.queue)
 
 	def tearDown(self):
-		self.db.clear_monitor_table()
+		self.db.clear_table()
 		self.db.close()
 
 

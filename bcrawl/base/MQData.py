@@ -11,6 +11,12 @@ PROVIDER_LJ = 3
 PROVIDER_VK = 4
 
 class Post(object):
+
+	NEW = 1
+	UPDATED = 2
+	NEW_LINK = 3
+	DUBLICATE = 4
+
  	@staticmethod
 	def from_values(query_id, provider, values_):
 		return Post(query_id, provider, values_[0], values_[1], parser.parse(values_[2]), values_[3])
@@ -26,6 +32,7 @@ class Post(object):
 		self.content = None
 
 		self.collected = datetime.datetime.utcnow()
+		self.status = Post.NEW
 
 	def __str__(self):
 		return '{%d, %s, %s, %s, %s, %s}' % (self.query_id, 

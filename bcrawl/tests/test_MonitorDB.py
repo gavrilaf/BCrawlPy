@@ -10,7 +10,7 @@ class MonitorDBTests(unittest.TestCase):
 		self.db = MonDB.Repository(db_name = 'bcrawl_test', collection_name = 'monitor_test')
 
 	def tearDown(self):
-		self.db.clear_monitor_table()
+		self.db.clear_table()
 		self.db.close()
 		self.db = None
 
