@@ -41,7 +41,7 @@ class DublicateCheckerTests(unittest.TestCase):
 
 		self.assertIsNotNone(pinfo)
 
-		self.assertEqual(pinfo.publish_date, datetime.date(2013, 10, 25))
+		self.assertEqual(pinfo.publish_date, datetime.datetime(2013, 10, 25))
 		self.assertEqual(len(pinfo.queries), 3)
 		self.assertTrue(1 in pinfo.queries)
 		self.assertTrue(2 in pinfo.queries)

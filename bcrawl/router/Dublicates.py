@@ -10,27 +10,26 @@ class Handler(object):
 			Check post.link in dublicates db
 		"""
 		pinfo = self.db.find_pinfo(post.link)
-		print pinfo
+		updated = False
 		
 		if pinfo is None: # New post
 			pinfo = self.pinfo_from_post(post)
 			self.store_pinfo(pinfo)
 		else:
-			print 1
 			post.status = MQData.Post.DUBLICATE
 
 			if post.query_id not in pinfo.queries:
-				print 2
 				post.status = MQData.Post.NEW_LINK
 				pinfo.queries.append(post.query_id)
+				updated = True
 
 			if pinfo.publish_date < post.publish_date:
-				print 3
 				post.status = MQData.Post.UPDATED
 				pinfo.publish_date = post.publish_date
+				updated = True
 
-		print 'Before storing: %s' % str(pinfo)
-		self.store_pinfo(pinfo)
+		if updated:
+			self.store_pinfo(pinfo)
 
 		return post
 
