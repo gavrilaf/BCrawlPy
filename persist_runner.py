@@ -1,4 +1,3 @@
-
 import logging.config
 from bcrawl.base import MQ, Consts
 

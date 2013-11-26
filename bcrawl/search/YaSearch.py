@@ -3,7 +3,7 @@ from bcrawl.providers import Yandex, Errors
 from bcrawl.monitor import MonSender
 
 
-class Producer(MQ.BaseProducer):
+class Runner(MQ.BaseProducer):
 	def __init__(self):
 		super(Producer, self).__init__(Consts.Queues.QUERIES, Consts.Queues.POSTS_4_FILTER, Consts.Runners.YANDEX_SEARCHER)
 		

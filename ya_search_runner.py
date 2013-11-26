@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import logging.config
-from bcrawl.runners import YaSearch
+from bcrawl.search import YaSearch
 
 if __name__ == '__main__':
 	logging.config.fileConfig("logging.conf")
-	p = YaSearch.Producer()
+	p = YaSearch.Runner()
 	p.run()
