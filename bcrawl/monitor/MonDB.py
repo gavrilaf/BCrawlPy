@@ -13,7 +13,7 @@ class Repository(object):
 		Used from nonitor runner and monitor web.
 	"""
 	def __init__(self, db_name = 'bcrawl', collection_name = 'monitor'):
-		self.client = MongoClient()
+		self.client = MongoClient(tz_aware=True)
 		self.db = self.client[db_name]
 		self.collection = self.db[collection_name]
 

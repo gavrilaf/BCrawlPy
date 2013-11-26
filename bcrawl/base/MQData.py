@@ -19,6 +19,12 @@ class Post(object):
 
  	@staticmethod
 	def from_values(query_id, provider, values_):
+		'''
+			Create new Post object from values array.
+			Values contains [link, title, publish_date, author]
+
+			Uses dateutil.parse for converting string date to datetime. 
+		'''
 		return Post(query_id, provider, values_[0], values_[1], parser.parse(values_[2]), values_[3])
 
 	def __init__(self, query_id, provider, link, title, publish_date, author):

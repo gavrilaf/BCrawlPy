@@ -4,7 +4,7 @@ from bcrawl.monitor import MonDB
 
 class Runner(MQ.BaseConsumer):
 	def __init__(self):
-		super(Consumer, self).__init__(Consts.Queues.MONITOR, Consts.Runners.MONITOR)
+		super(Runner, self).__init__(Consts.Queues.MONITOR, Consts.Runners.MONITOR)
 
 	def process(self, p):
 		self.repository.store_msg(p)

@@ -22,7 +22,7 @@ class Handler(object):
 				post.status = MQData.Post.NEW_LINK
 				pinfo.queries.append(post.query_id)
 				updated = True
-
+			
 			if pinfo.publish_date < post.publish_date:
 				post.status = MQData.Post.UPDATED
 				pinfo.publish_date = post.publish_date

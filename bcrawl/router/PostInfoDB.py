@@ -6,6 +6,7 @@ class PostInfo(object):
 
 	@staticmethod
 	def from_mongo(json) :
+		print 'from mongo: %s' % str(json)
 		pi = PostInfo()
 		pi.id = json['_id']
 		pi.link = json['link']
@@ -24,6 +25,7 @@ class PostInfo(object):
 		obj = {'link' : self.link, 'publish_date' : self.publish_date, 'queries' : self.queries}
 		if self.id is not None:
 			obj['_id'] = self.id
+		print 'mongo_rep: %s' % str(obj)
 		return obj
 
 	def __str__(self):
@@ -31,8 +33,8 @@ class PostInfo(object):
 
 class Repository(object):
 
-	def __init__(self, db_name = 'bcrawl', collection_name = 'dub_filter'):
-		self.client = MongoClient()
+	def __init__(self, db_name, collection_name):
+		self.client = MongoClient(tz_aware=True)
 		self.db = self.client[db_name]
 		self.collection = self.db[collection_name]
 

@@ -49,7 +49,8 @@ class Runner(MQ.BaseConsumer):
 		if self.counter >= 3:
 			return []
 
-		query = MQData.DayQuery(1, self.counter+1, 'джихад', datetime.date.today()-datetime.timedelta(self.counter))
+		#query = MQData.DayQuery(self.counter+1, self.counter+1, 'джихад', datetime.date.today()-datetime.timedelta(self.counter))
+		query = MQData.DayQuery(self.counter+1, 1, 'джихад', datetime.date.today())
 		self.counter += 1
 
 		return [query]
