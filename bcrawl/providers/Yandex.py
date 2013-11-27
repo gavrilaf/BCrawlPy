@@ -4,24 +4,32 @@
 import requests
 import logging
 import xml.dom.minidom
-
 from bcrawl.base import MQData
 
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-def element_value(root, tag):
+def _element_value(root, tag):
 	try:
 		return root.getElementsByTagName(tag)[0].firstChild.nodeValue
 	except Exception as e:
 		raise XmlTagError(tag, e) 
 
-def element_attr_value(root, tag, attr):
+def _element_attr_value(root, tag, attr):
 	try:
 		return root.getElementsByTagName(name)[0].getAttribute(attr).nodeValue
 	except Exception as e:
 		raise XmlTagError(tag+'::'+attr, e) 
 
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 class Searcher(object):
+	'''
+		Class for execution yandex search queries
+
+		Public methods:
+			* searcher.start_search(query)
+			* searcher.next()
+	'''
 	DEF_NUMDOC = 100
 
 	def __init__(self, runner_name, monitor, numdoc = DEF_NUMDOC):
@@ -39,15 +47,15 @@ class Searcher(object):
 		self.finished = False
 		self.page = 0
 
-		return self.send_request()
+		return self._send_request()
 
 	def next(self):
 		if self.finished:
 			return []
 
-		return self.send_request()
+		return self._send_request()
 
-	def send_request(self):
+	def _send_request(self):
 		p = {
 			u'text': self.query.text, 
 			'ft' : 'blog', 
@@ -67,38 +75,38 @@ class Searcher(object):
 			raise HttpError(r)
 		
 		self.page += 1
-		posts =  self.parse_response(r)
+		posts =  self._parse_response(r)
 
 		if len(posts) < self.numdoc:
 			self.finished = True
 
 		return posts
 
-	def parse_response(self, r):
+	def _parse_response(self, r):
 		xmldoc = xml.dom.minidom.parseString(r.text.encode('utf-8'))
 
-		self.yandex_count = element_value(xmldoc, 'yablogs:count')
+		self.yandex_count = _element_value(xmldoc, 'yablogs:count')
 	
 		posts = []
 		items = xmldoc.getElementsByTagName('item')
 
 		for item in items:
-			post = self.parse_item(item)
+			post = self._parse_item(item)
 			if post is not None:
 				posts.append(post)
 
 		return posts
 
-	def parse_item(self, item):
+	def _parse_item(self, item):
 		fields = ['link', 'title', 'pubDate', 'author']
 		values = []
 
 		for field in fields: 
 			try:
 				if field == 'author':
-					values.append(self.parse_author(item))
+					values.append(self._parse_author(item))
 				else:
-					values.append(element_value(item, field))
+					values.append(_element_value(item, field))
 			except XmlTagError as e:
 				if field == 'link':
 					self.logger.warning('Yandex.Searcher: post without link!')
@@ -108,7 +116,7 @@ class Searcher(object):
 
 		return MQData.Post.from_values(self.query.query_id, MQData.PROVIDER_YANDEX, values)
 
-	def parse_author(self, item):
+	def _parse_author(self, item):
 		e = item.getElementsByTagName('author')
 		if len(e) == 1:
 			return e[0].firstChild.nodeValue
@@ -123,9 +131,15 @@ class Searcher(object):
 
 		raise XmlTagError('author')
 
-
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 class SearchBroker(object):
+	'''
+		Class for managing yandex search queries.
+
+		Public method:
+			* broker.read_day_posts(query, out_queue)
+	'''
 
 	def __init__(self, runner_name, monitor):
 		self.logger = logging.getLogger(runner_name)
@@ -155,8 +169,15 @@ class SearchBroker(object):
 			
 		self.logger.info('%s: Total collected %d posts' % (str(query.day), total_count))
 
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 class ContentReader(object):
+	'''
+		Class for retreiving post content using Yandex.
+
+		Public method:
+			* reader.read_content(url)
+	'''
 	def __init__(self, runner_name, monitor):
 		self.logger = logging.getLogger(runner_name)
 		self.monitor = monitor
@@ -169,20 +190,16 @@ class ContentReader(object):
 		r = requests.get("http://blogs.yandex.ru/search.rss", params=p)
 
 		self.monitor.search_http_request(MQData.PROVIDER_YANDEX, None)  # Notify monitor about http request
-		self.logger.info('Yandex.ContentReader: (%s, %d)' % (r.url, r.status_code))
-
 		if r.status_code != 200:
 			raise HttpError(r)
 
-		return self.parse_response(r)
+		return self._parse_response(r)
 
-	def parse_response(self, r):
+	def _parse_response(self, r):
 		xmldoc = xml.dom.minidom.parseString(r.text.encode('utf-8'))
 		items = xmldoc.getElementsByTagName('item')
-		if len(items) == 0:
+		if not items:
 			return None
 
-		txt = element_value(items[0], 'description')
-		self.logger.debug('Content: %s' % txt)
-
-		return txt
+		return _element_value(items[0], 'description')
+		

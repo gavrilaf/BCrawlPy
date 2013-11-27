@@ -8,13 +8,6 @@ from bcrawl.base import Consts, MQData
 from bcrawl.providers import Yandex
 from bcrawl.monitor import MonSender
 
-class MockQueue(object):
-	def __init__(self):
-		self.lst = []
-
-	def put(self, obj):
-		self.lst.append(obj)
-
 
 
 class YandexSearcherTests(unittest.TestCase):
@@ -25,7 +18,7 @@ class YandexSearcherTests(unittest.TestCase):
 	def test_searcher(self):
 		searcher = Yandex.Searcher(Consts.Runners.TEST, self.monitor)
 
-		day = datetime.date(2013, 10, 30)
+		day = datetime.date.today()-datetime.timedelta(2)
 		day_query = MQData.DayQuery(1, 1234, u'путин', day)
 
 		posts = searcher.start_search(day_query)
@@ -47,7 +40,7 @@ class YandexSearcherTests(unittest.TestCase):
 	def test_broker(self):
 		broker = Yandex.SearchBroker(Consts.Runners.TEST, self.monitor)
 
-		day = datetime.date(2013, 10, 30)
+		day = datetime.date.today()-datetime.timedelta(2)
 		day_query = MQData.DayQuery(1, 1234, u'котеги', day)
 
 		out_queue = MockQueue()
@@ -55,10 +48,10 @@ class YandexSearcherTests(unittest.TestCase):
 
 		broker.read_day_posts(day_query, out_queue)
 		
-		self.assertIsNotNone(out_queue.lst)	
-		self.assertTrue(len(out_queue.lst) > 0)
+		self.assertIsNotNone(out_queue.items)	
+		self.assertTrue(len(out_queue.items) > 0)
 
-		self.assertEqual(out_queue.lst[0].publish_date.date(), day)
-		self.assertEqual(out_queue.lst[0].query_id, 1234)
+		self.assertEqual(out_queue.items[0].publish_date.date(), day)
+		self.assertEqual(out_queue.items[0].query_id, 1234)
 
 		
