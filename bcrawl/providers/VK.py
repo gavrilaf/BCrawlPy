@@ -31,18 +31,18 @@ class ContentReader(object):
 		self.logger.info('ContentReader: (%s, %d)' % (r.url, r.status_code))
 
 		if r.status_code != 200:
-			raise Errors.HttpError(r)
+			raise HttpError(r)
 
 		try:
 			return self._parse_response(r)
 
-		except Errors.InvalidJson as e:
+		except InvalidJson as e:
 			self.logger.warning(e.msg)
 
 	def get_vk_id(self, url):
 		lst = url.rsplit('wall',1)
 		if len(lst) != 2:
-			raise Errors.InvalidUrl(url)
+			raise InvalidUrl(url)
 
 		return lst[1]
 
@@ -50,10 +50,10 @@ class ContentReader(object):
 		data = json.loads(r.text.encode('utf-8'))
 		resp = data['response']
 		if resp is None:
-			raise Errors.InvalidJson("Can't find 'response' field")
+			raise InvalidJson("Can't find 'response' field")
 
 		if len(resp)==0:
-			raise Errors.InvalidJson("Field 'response' is empty")	
+			raise InvalidJson("Field 'response' is empty")	
 
 		return resp[0]['text']		
 
