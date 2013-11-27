@@ -3,7 +3,7 @@
 
 import requests
 import logging
-import Errors
+from Errors import *
 from bs4 import BeautifulSoup
 from bcrawl.base import Consts
 from bcrawl.base import MQData

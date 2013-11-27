@@ -4,7 +4,7 @@
 import requests
 import logging
 import json
-import Errors
+from Errors import *
 from bcrawl.base import Consts
 from bcrawl.base import MQData
 

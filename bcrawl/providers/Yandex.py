@@ -5,6 +5,7 @@ import requests
 import logging
 import xml.dom.minidom
 from bcrawl.base import MQData
+from Errors import *
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -189,7 +190,7 @@ class ContentReader(object):
 
 		r = requests.get("http://blogs.yandex.ru/search.rss", params=p)
 
-		self.monitor.search_http_request(MQData.PROVIDER_YANDEX, None)  # Notify monitor about http request
+		self.monitor.content_http_request(MQData.PROVIDER_YANDEX, None)  # Notify monitor about http request
 		if r.status_code != 200:
 			raise HttpError(r)
 

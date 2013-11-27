@@ -1,19 +1,19 @@
-from bcrawl.base import MQ, Consts
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+from bcrawl.base import Consts, MQData
 from bcrawl.providers import Yandex
+import BaseCollector
 
-
-class Runner(MQ.BaseProducer):
+class Runner(BaseCollector.BaseRunner):
 	def __init__(self):
-		super(Runner, self).__init__(Consts.Queues.POSTS_4_CONTENT_COLLECT_YA, Consts.Queues.POSTS_4_PERSIST, Consts.Runners.YA_CONTENT_COLLECTOR)
+		super(Runner, self).__init__(Consts.Queues.POSTS_4_CONTENT_COLLECT_YA, 
+			Consts.Queues.POSTS_4_PERSIST, 
+			Consts.Runners.YA_CONTENT_COLLECTOR,
+			MQData.PROVIDER_YANDEX)
 		
-	def process(self, p, out_queue):
-		#self.logger.info('Post for collecting: ' + str(p))
-		
-		p.content = self.collector.read_content(p.link)
+	def create_reader(self, monitor):
+		self.reader = Yandex.ContentReader(self.name, self.monitor)
 
-		self.logger.info('Post %s. Content is collected' % p.link)
-		out_queue.put(p)
-
-
-	def on_start(self, connection):
-		self.collector = Yandex.ContentReader(self.name)
+	def read_content(self, link):
+		return self.reader.read_content(link)
