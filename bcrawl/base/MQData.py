@@ -5,10 +5,6 @@ import datetime
 from dateutil import parser
 import jsonpickle
 
-PROVIDER_YANDEX = 1
-PROVIDER_TWITTER = 2
-PROVIDER_LJ = 3
-PROVIDER_VK = 4
 
 class Post(object):
 

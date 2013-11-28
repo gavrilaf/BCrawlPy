@@ -18,7 +18,7 @@ class Runner(MQ.BaseConsumer):
 			self.monitor.query_completed(p.id)
 
 	def on_start(self, conn):
-		self.logger.info(self.name + ' is started')
+		super(Runner, self).on_start(connection)
 
 		self.queries_queue = MQ.BaseQueue(conn, Consts.Queues.QUERIES, self.name)
 		self.monitor_queue = MQ.BaseQueue(conn, Consts.Queues.MONITOR, self.name)
@@ -29,14 +29,14 @@ class Runner(MQ.BaseConsumer):
 		self.queries_queue.close()
 		self.monitor_queue.close()
 
-		self.logger.info(self.name + ' is finished')
+		super(Runner, self).on_finish()
 
 	def on_idle(self):
 		queries = self.get_new_queries()
 		if queries:
 			self.send_queries(queries)
-		else:
-			time.sleep(1)
+		
+		super(Runner, self).on_idle()
 				
 	def send_queries(self, queries):
 		for query in queries:

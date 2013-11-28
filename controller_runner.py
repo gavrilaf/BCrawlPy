@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import logging.config
-from bcrawl.controller import Controller
+from bcrawl.runners import Controller
 
 if __name__ == '__main__':
 	logging.config.fileConfig("logging.conf")

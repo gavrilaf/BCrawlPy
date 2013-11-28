@@ -21,3 +21,9 @@ class Queues(object):
 	QUERY_STATUSES = 'MQ_QueryStatuses'
 	MONITOR = 'MQ_Monitor'
 	
+
+class Providers(object):
+	YANDEX = 1
+	TWITTER = 2
+	LJ = 3
+	VK = 4

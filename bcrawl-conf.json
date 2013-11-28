@@ -1,0 +1,13 @@
+{
+    'monitor_db': {
+        'db': 'bcrawl',
+        'collection': 'monitor'
+    },
+    'router_db': {
+        'db': 'bcrawl',
+        'collection': 'post_info'
+    },
+    'posts_db': {
+    	
+    }
+}
