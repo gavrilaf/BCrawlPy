@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 from bcrawl.base import MQ, Consts
 from bcrawl.base import DB
 import Posts
@@ -20,14 +18,10 @@ class PostPersister(MQ.BaseConsumer):
 	def on_start(self, connection):
 		super(PostPersister, self).on_start(connection)
 		
-		self.engine = create_engine(self.db_path)
-		DB.Base.metadata.create_all(self.engine)
-		Session = sessionmaker(bind=self.engine)
-		self.session = Session()
-
-		self.db = Posts.Repository(self.session)
+		self.db_context = DB.Context(self.db_path)
+		self.db = Posts.Repository(self.db_context.session)
 
 	def on_finish(self):
-		self.session.close()
+		self.db_context.close()
 		super(PostPersister, self).on_finish()
 

@@ -5,11 +5,13 @@ import datetime
 import time
 from bcrawl.base import MQ, MQData, Consts
 from bcrawl.monitor import MonSender
+import Queries
 
 class Runner(MQ.BaseConsumer):
-	def __init__(self):
+	def __init__(self, db_path):
 		super(Runner, self).__init__(Consts.Queues.QUERY_STATUSES, Consts.Runners.SEARCH_CONTROLLER)
 
+		self.db_path = db_path
 		self.counter = 0
 
 	def process(self, p):
@@ -20,6 +22,9 @@ class Runner(MQ.BaseConsumer):
 	def on_start(self, conn):
 		super(Runner, self).on_start(connection)
 
+		self.db_context = DB.Context(self.db_path)
+		self.db = Posts.Repository(self.db_context.session)
+
 		self.queries_queue = MQ.BaseQueue(conn, Consts.Queues.QUERIES, self.name)
 		self.monitor_queue = MQ.BaseQueue(conn, Consts.Queues.MONITOR, self.name)
 		
@@ -28,6 +33,8 @@ class Runner(MQ.BaseConsumer):
 	def on_finish(self):
 		self.queries_queue.close()
 		self.monitor_queue.close()
+
+		self.db_context.close()
 
 		super(Runner, self).on_finish()
 
