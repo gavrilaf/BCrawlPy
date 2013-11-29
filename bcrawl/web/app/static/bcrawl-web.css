@@ -1,0 +1,32 @@
+body {
+  margin-top: 5px;
+  margin-left: 15px;
+  margin-right: 15px;
+
+  font-size: 12px;
+}
+
+.panel {
+	margin-bottom: 10px;
+}
+
+.table {
+	margin-bottom: 5px;	
+}
+
+.panel-title {
+	font-size: 14px;
+}
+
+.navbar-item-1 {
+	font-size: 14px;
+}
+
+#wrapper {
+  padding-left: 0;
+}
+
+#page-wrapper {
+  width: 100%;
+  padding: 5px 15px;
+}

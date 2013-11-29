@@ -16,12 +16,12 @@ def get_tasks():
 
 @app.route('/status/collecting')
 def collecting_status():
-    return render_template("collecting_mon.html", monitor=get_cmon_values())
+    return render_template("status_collect.html", monitor=get_cmon_values())
 
 @app.route('/status/queries')
 def queries_status():
-    return render_template("collecting_status.html")
+    return render_template("status_queries.html")
 
 @app.route('/status/server')
 def server_status():
-    return render_template("server_mon.html")
+    return render_template("status_server.html")

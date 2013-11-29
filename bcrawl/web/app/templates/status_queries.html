@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap/css/bootstrap.css') }}">
+    <script src="{{ url_for('static', filename='jquery.js') }}"></script>
+
+</head>
+<body>
+
+<div id="wraper">
+  <nav class="navbar navbar-default" role="navigation">
+    <div class="navbar-header">
+      <a href="#" class="navbar-brand">BCrawl</a>
+    </div>
+    <div class="collapse navbar-collapse">
+      <ul class="nav navbar-nav">
+        <li class="navbar-item-1"><a href="/status/collecting">Состояние сбора</a></li>
+        <li><a class="active navbar-item-1" href="#">Поисковые запросы</a></li>
+        <li><a class="navbar-item-1" href="/status/server">Состояние сервера</a></li>            
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </nav>
+
+  <div id="page-wraper">
+    <h3>Запросы</h3>
+  </div>
+</div>
+
+
+</body>
+</html>
