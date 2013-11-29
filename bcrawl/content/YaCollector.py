@@ -10,7 +10,7 @@ class Runner(BaseCollector.BaseRunner):
 		super(Runner, self).__init__(Consts.Queues.POSTS_4_CONTENT_COLLECT_YA, 
 			Consts.Queues.POSTS_4_PERSIST, 
 			Consts.Runners.YA_CONTENT_COLLECTOR,
-			MQData.PROVIDER_YANDEX)
+			Consts.Providers.YANDEX)
 		
 	def create_reader(self, monitor):
 		self.reader = Yandex.ContentReader(self.name, self.monitor)

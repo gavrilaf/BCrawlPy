@@ -4,7 +4,7 @@
 import requests
 import logging
 import xml.dom.minidom
-from bcrawl.base import MQData
+from bcrawl.base import MQData, Consts
 from Errors import *
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -69,7 +69,7 @@ class Searcher(object):
 		
 		r = requests.get("http://blogs.yandex.ru/search.rss", params=p)
 
-		self.monitor.search_http_request(MQData.PROVIDER_YANDEX, self.query.query_id)  # Notify monitor about http request
+		self.monitor.search_http_request(Consts.Providers.YANDEX, self.query.query_id)  # Notify monitor about http request
 		self.logger.info('Searcher: (%s, %d)' % (r.url, r.status_code))
 		
 		if r.status_code != 200:
@@ -115,7 +115,7 @@ class Searcher(object):
 				self.log.warning('Yandex.Searcher: tag %s not found for post %s' % (e.tag, values[0]))
 				values.append('')
 
-		return MQData.Post.from_values(self.query.query_id, MQData.PROVIDER_YANDEX, values)
+		return MQData.Post.from_values(self.query.query_id, Consts.Providers.YANDEX, values)
 
 	def _parse_author(self, item):
 		e = item.getElementsByTagName('author')
@@ -190,7 +190,7 @@ class ContentReader(object):
 
 		r = requests.get("http://blogs.yandex.ru/search.rss", params=p)
 
-		self.monitor.content_http_request(MQData.PROVIDER_YANDEX, None)  # Notify monitor about http request
+		self.monitor.content_http_request(Consts.Providers.YANDEX, None)  # Notify monitor about http request
 		if r.status_code != 200:
 			raise HttpError(r)
 

@@ -1,12 +1,12 @@
 from flask import render_template, jsonify
 from app import app
 from contextlib import closing
-from bcrawl.db import Monitor
+from bcrawl.monitor import MonDB
 
 
 
 def get_cmon_values():
-	with closing(Monitor.Repository()) as db:
+	with closing(MonDB.Repository()) as db:
 		return db.status_full()
 
 

@@ -1,7 +1,7 @@
 import unittest
 import datetime
 from dateutil.tz import *
-from bcrawl.base import MQData
+from bcrawl.base import MQData, Consts
 from bcrawl.router import PostInfoDB
 from bcrawl.router import Dublicates
 
@@ -18,10 +18,10 @@ class DublicateCheckerTests(unittest.TestCase):
 		self.db = None
 
 	def testDublicates(self):
-		post = MQData.Post.from_values(1, MQData.PROVIDER_YANDEX, ['http://url', 'test', '21.10.2013 00:00Z', 'author'])
-		updated = MQData.Post.from_values(1, MQData.PROVIDER_YANDEX, ['http://url', 'test', '22.10.2013 00:00Z', 'author'])
-		new_link = MQData.Post.from_values(2, MQData.PROVIDER_YANDEX, ['http://url', 'test', '22.10.2013 00:00Z', 'author'])
-		updated_new_link = MQData.Post.from_values(3, MQData.PROVIDER_YANDEX, ['http://url', 'tst', '25.10.2013 00:00Z', 'author'])
+		post = MQData.Post.from_values(1, Consts.Providers.YANDEX, ['http://url', 'test', '21.10.2013 00:00Z', 'author'])
+		updated = MQData.Post.from_values(1, Consts.Providers.YANDEX, ['http://url', 'test', '22.10.2013 00:00Z', 'author'])
+		new_link = MQData.Post.from_values(2, Consts.Providers.YANDEX, ['http://url', 'test', '22.10.2013 00:00Z', 'author'])
+		updated_new_link = MQData.Post.from_values(3, Consts.Providers.YANDEX, ['http://url', 'tst', '25.10.2013 00:00Z', 'author'])
 
 		p = self.dub_handler.process(post)
 		self.assertEqual(p.status, MQData.Post.NEW)

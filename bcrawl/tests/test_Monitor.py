@@ -1,6 +1,6 @@
 import unittest
 import datetime
-from bcrawl.base import MQData
+from bcrawl.base import MQData, Consts
 from bcrawl.monitor import MonDB
 from bcrawl.monitor import MonSender
 
@@ -46,12 +46,12 @@ class MonitorTests(unittest.TestCase):
 		self.assertEqual(status['http']['content']['vk']['error']['hour'], 0)
 
 		for i in xrange(3):
-			self.monitor.search_http_request(MQData.PROVIDER_YANDEX, 1)
-			self.monitor.search_http_error(MQData.PROVIDER_YANDEX, 1, 404, 'test_url')
-			self.monitor.search_exception(MQData.PROVIDER_YANDEX, 1, Exception('test'))
-			self.monitor.content_http_error(MQData.PROVIDER_YANDEX, 404, 'test_url')
-			self.monitor.content_http_request(MQData.PROVIDER_LJ, 'test_url')
-			self.monitor.content_exception(MQData.PROVIDER_VK, 'test_url', Exception('test'))
+			self.monitor.search_http_request(Consts.Providers.YANDEX, 1)
+			self.monitor.search_http_error(Consts.Providers.YANDEX, 1, 404, 'test_url')
+			self.monitor.search_exception(Consts.Providers.YANDEX, 1, Exception('test'))
+			self.monitor.content_http_error(Consts.Providers.YANDEX, 404, 'test_url')
+			self.monitor.content_http_request(Consts.Providers.LJ, 'test_url')
+			self.monitor.content_exception(Consts.Providers.VK, 'test_url', Exception('test'))
 
 		status = self.db.status_full()
 		self.assertEqual(status['http']['search']['yandex']['sent']['hour'], 3)

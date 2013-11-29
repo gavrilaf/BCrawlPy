@@ -5,7 +5,7 @@ from bcrawl.monitor import MonSender
 
 class Runner(MQ.BaseProducer):
 	def __init__(self):
-		super(Producer, self).__init__(Consts.Queues.QUERIES, Consts.Queues.POSTS_4_FILTER, Consts.Runners.YANDEX_SEARCHER)
+		super(Runner, self).__init__(Consts.Queues.QUERIES, Consts.Queues.POSTS_4_FILTER, Consts.Runners.YANDEX_SEARCHER)
 		
 	def process(self, p, out_queue):
 		try:
@@ -16,13 +16,13 @@ class Runner(MQ.BaseProducer):
 			self.logger.error('Http error code %s on url %s' % (e.code, e.url))
 
 			self.statuses_queue.put(MQData.DayQueryStatus(p.id, MQData.DayQueryStatus.ERROR))
-			self.monitor.search_http_error(MQData.PROVIDER_YANDEX, p.id, e.code, e.url)
+			self.monitor.search_http_error(Consts.Providers.YANDEX, p.id, e.code, e.url)
 		
 		except Exception as e:
 			self.logger.exception(e)
 
 			self.statuses_queue.put(MQData.DayQueryStatus(p.id, MQData.DayQueryStatus.ERROR))
-			self.monitor.search_exception(MQData.PROVIDER_YANDEX, p.id, e)
+			self.monitor.search_exception(Consts.Providers.YANDEX, p.id, e)
 
 	def on_start(self, connection):
 		self.logger.info(self.name + ' is started')

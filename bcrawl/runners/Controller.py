@@ -3,7 +3,7 @@
 
 import datetime
 import time
-from bcrawl.base import MQ, MQData, Consts
+from bcrawl.base import MQ, MQData, Consts, DB
 from bcrawl.monitor import MonSender
 import Queries
 
@@ -19,14 +19,14 @@ class Runner(MQ.BaseConsumer):
 		if p.status == MQData.DayQueryStatus.OK:
 			self.monitor.query_completed(p.id)
 
-	def on_start(self, conn):
+	def on_start(self, connection):
 		super(Runner, self).on_start(connection)
 
 		self.db_context = DB.Context(self.db_path)
-		self.db = Posts.Repository(self.db_context.session)
+		self.db = Queries.Repository(self.db_context.session)
 
-		self.queries_queue = MQ.BaseQueue(conn, Consts.Queues.QUERIES, self.name)
-		self.monitor_queue = MQ.BaseQueue(conn, Consts.Queues.MONITOR, self.name)
+		self.queries_queue = MQ.BaseQueue(connection, Consts.Queues.QUERIES, self.name)
+		self.monitor_queue = MQ.BaseQueue(connection, Consts.Queues.MONITOR, self.name)
 		
 		self.monitor = MonSender.Sender(self.monitor_queue)
 

@@ -1,4 +1,4 @@
-from bcrawl.base import MQData
+from bcrawl.base import MQData, Consts
 from bcrawl.base.MQData import MonitorMsg
 
 class Sender(object):
@@ -9,9 +9,9 @@ class Sender(object):
 		self.queue = queue 
 
 		self.providers_map = {
-			MQData.PROVIDER_YANDEX : MonitorMsg.HTTP_CONTENT_YANDEX, 
-			MQData.PROVIDER_VK : MonitorMsg.HTTP_CONTENT_VK, 
-			MQData.PROVIDER_LJ : MonitorMsg.HTTP_CONTENT_LJ}
+			Consts.Providers.YANDEX : MonitorMsg.HTTP_CONTENT_YANDEX, 
+			Consts.Providers.VK : MonitorMsg.HTTP_CONTENT_VK, 
+			Consts.Providers.LJ : MonitorMsg.HTTP_CONTENT_LJ}
 
 
 	def query_sent(self, query_id):

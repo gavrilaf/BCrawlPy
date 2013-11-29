@@ -10,7 +10,7 @@ class Runner(BaseCollector.BaseRunner):
 		super(Runner, self).__init__(Consts.Queues.POSTS_4_CONTENT_COLLECT_VK, 
 			Consts.Queues.POSTS_4_PERSIST, 
 			Consts.Runners.VK_CONTENT_COLLECTOR,
-			MQData.PROVIDER_VK)
+			Consts.Providers.VK)
 		
 	def create_reader(self, monitor):
 		self.reader = VK.ContentReader(self.name, self.monitor)

@@ -10,7 +10,7 @@ class Runner(BaseCollector.BaseRunner):
 		super(Runner, self).__init__(Consts.Queues.POSTS_4_CONTENT_COLLECT_LJ, 
 			Consts.Queues.POSTS_4_PERSIST, 
 			Consts.Runners.LJ_CONTENT_COLLECTOR,
-			MQData.PROVIDER_LJ)
+			Consts.Providers.LJ)
 		
 	def create_reader(self, monitor):
 		self.reader = LJ.ContentReader(self.name, self.monitor)

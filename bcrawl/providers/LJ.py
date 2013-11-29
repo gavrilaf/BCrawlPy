@@ -25,7 +25,7 @@ class ContentReader(object):
 
 		r = requests.get(url)
 		
-		self.monitor.content_http_request(MQData.PROVIDER_LJ, url)  # Notify monitor about http request
+		self.monitor.content_http_request(Consts.Providers.LJ, url)  # Notify monitor about http request
 		self.logger.info('ContentReader: (%s, %d)' % (r.url, r.status_code))
 
 		if r.status_code != 200:
