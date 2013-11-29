@@ -22,6 +22,11 @@ body {
 	font-size: 14px;
 }
 
+.no-margins {
+  margin-right: 0px; 
+  margin-left: 0px
+}
+
 #wrapper {
   padding-left: 0;
 }
