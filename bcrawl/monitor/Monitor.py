@@ -8,7 +8,7 @@ class Runner(MQ.BaseConsumer):
 
 	def process(self, p):
 		self.repository.store_msg(p)
-		self.logger.info(str(p))
+		self.logger.info(unicode(p))
 
 	def on_start(self, conn):
 		self.logger.info(self.name + ' is started')

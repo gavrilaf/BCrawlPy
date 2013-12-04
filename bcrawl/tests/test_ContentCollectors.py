@@ -15,7 +15,7 @@ class ContentCollectorTests(unittest.TestCase):
 	def test_collect_yandex(self):
 		reader = Yandex.ContentReader(Consts.Runners.TEST, self.monitor)
 	
-		self.assertIsNotNone(reader.read_content('http://nikud17.livejournal.com/733345.html'))
+		self.assertIsNotNone(reader.read_content('http://probyjdenie.livejournal.com/1170195.html'))
 		self.assertIsNone(reader.read_content('http://mayo__not_exists.livejournal.com/463351.html'))
 
 		self.assertEqual(len(self.queue.items), 2)
@@ -23,7 +23,7 @@ class ContentCollectorTests(unittest.TestCase):
 	def test_collect_lj(self):
 		reader = LJ.ContentReader(Consts.Runners.TEST, self.monitor)
 
-		self.assertIsNotNone(reader.read_content('http://mayo.livejournal.com/463351.html'))
+		self.assertIsNotNone(reader.read_content('http://probyjdenie.livejournal.com/1170195.html'))
 		self.assertIsNone(reader.read_content('http://mayo__not_exists.livejournal.com/463351.html'))
 
 		self.assertEqual(len(self.queue.items), 2)

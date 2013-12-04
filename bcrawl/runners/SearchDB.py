@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from datetime import date
-from datetime import datetime
+import datetime
+from dateutil.rrule import *
 from sqlalchemy import Column, Integer, String, Date, ForeignKey, DateTime
 from sqlalchemy.orm import relationship, backref
 from bcrawl.base import DB
@@ -18,11 +18,10 @@ class SObject(DB.Base):
 
     def __init__(self, name):
         self.name = name
-        
-    def __repr__(self):
-        return ('<SObject(%d, %s)>' % (self.id, self.name))
-   
 
+    def __unicode__(self):
+        return u"SObject(%d, %s)" % (self.id, self.name)
+        
 class Query(DB.Base):
     __tablename__ = 'Queries'
 
@@ -32,7 +31,7 @@ class Query(DB.Base):
     start_from = Column(Date)
     sobject_id = Column(Integer, ForeignKey('SObjects.id'))
 
-    day_queries = relationship('DayQuery', order_by='DayQuery.day')
+    day_queries = relationship('DayQuery', backref = backref('query', order_by='DayQuery.day'))
     posts = relationship('Post')
     
     def __init__(self, sobj_id, provider, text, start_from):
@@ -40,11 +39,29 @@ class Query(DB.Base):
         self.provider = provider
         self.text = text
         self.start_from = start_from
-    
-    def __repr__(self):
-        return ('<Query(%d, %s, %s, %s)>' % 
-            (self.id, self.provider, self.text, self.start_from))
 
+
+    def get_days_to_now(self):
+        if self.day_queries:
+            start = self.day_queries[-1].day
+            remove_first = True
+        else:
+            start = self.start_from
+            remove_first = False
+
+        days = []
+
+        lst = list(rrule(DAILY, dtstart = start, until = datetime.datetime.now()))
+        if remove_first:
+            del lst[0]
+        
+        for dt in lst:
+            days.append(dt.date())
+
+        return days
+        
+    def __unicode__(self):
+        return u"Query(%d, %d, %d, %s, %s)" % (self.id, self.sobject_id, self.provider, self.text, self.start_from)
 
 class DayQuery(DB.Base):
     __tablename__ = 'DayQueries'
@@ -63,9 +80,8 @@ class DayQuery(DB.Base):
         self.day = day
         self.status = status
 
-    def __repr__(self):
-        return ('<DayQuery(%d, %d, %s, %d)>' % 
-            (self.id, self.query_id, self.day, self.status))
+    def __unicode__(self):
+        return u"DayQuery(%d, %d, %s, %d)" % (self.id, self.query_id, self.day, self.status)
 
 
 class Post(DB.Base):

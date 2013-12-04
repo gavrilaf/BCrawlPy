@@ -72,16 +72,67 @@ class QueriesRepositoryTests(unittest.TestCase):
 		self.assertEqual(days[0].day, datetime.date(2013, 10, 20))
 		self.assertEqual(days[1].day, datetime.date(2013, 10, 21))
 
-		days = self.rep.get_day_queries_with_status(query.id, SearchDB.DayQuery.STATUS_COMPLETED)
+		# Check backref
+		self.assertEqual(days[0].query.id, query.id)
+		self.assertEqual(days[0].query.text, query.text)
+
+		days = self.rep.get_day_queries_with_status(query.id, SearchDB.DayQuery.STATUS_COMPLETED) # All day queries have status NEW
 		self.assertEqual(len(days), 0)
 
 		self.rep.update_day_query_status(day1.id, SearchDB.DayQuery.STATUS_COMPLETED)
 
+		days = self.rep.get_day_queries(query.id)
+		self.assertEqual(len(days), 2) # Day query must be updated (not created)
+
 		days = self.rep.get_day_queries_with_status(query.id, SearchDB.DayQuery.STATUS_NEW)
 		self.assertEqual(len(days), 1)
+		self.assertEqual(days[0].day, day2.day)
 
 		days = self.rep.get_day_queries_with_status(query.id, SearchDB.DayQuery.STATUS_COMPLETED)
 		self.assertEqual(len(days), 1)
+		self.assertEqual(days[0].day, day1.day)
 
 		days = self.rep.get_day_queries_with_status(query.id, SearchDB.DayQuery.STATUS_IN_PROGRESS)
 		self.assertEqual(len(days), 0)
+
+	def test_QueryEx(self):
+		o1 = self.rep.add_sobject('test')
+		q1 = self.rep.add_query(o1.id, Consts.Providers.YANDEX, 'test-q', datetime.date.today()-datetime.timedelta(2))
+
+		q2 = self.rep.get_query_by_id(q1.id)
+
+		lst = q2.get_days_to_now()
+
+		self.assertEqual(len(lst), 3)
+		self.assertEqual(lst[0], q2.start_from)
+		self.assertEqual(lst[1], q2.start_from+datetime.timedelta(1))
+		self.assertEqual(lst[2], datetime.date.today())
+
+		# Add first day
+		self.rep.add_day_query(q2.id, lst[0])
+
+		q2 = self.rep.get_query_by_id(q1.id)
+		lst = q2.get_days_to_now()
+
+		self.assertEqual(len(lst), 2)
+		self.assertEqual(lst[0], q2.start_from+datetime.timedelta(1))
+		self.assertEqual(lst[1], datetime.date.today())
+
+		# Add second day
+		self.rep.add_day_query(q2.id, lst[0])
+
+		q2 = self.rep.get_query_by_id(q1.id)
+		lst = q2.get_days_to_now()
+
+		self.assertEqual(len(lst), 1)
+		self.assertEqual(lst[0], datetime.date.today())
+
+		# Add third day
+		self.rep.add_day_query(q2.id, lst[0])
+
+		q2 = self.rep.get_query_by_id(q1.id)
+		lst = q2.get_days_to_now()
+
+		self.assertEqual(len(lst), 0)
+		
+

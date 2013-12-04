@@ -28,8 +28,8 @@ class PostInfo(object):
 		print 'mongo_rep: %s' % str(obj)
 		return obj
 
-	def __str__(self):
-		return str(self.mongo_rep())
+	def __unicode__(self):
+		return unicode(self.mongo_rep())
 
 class Repository(object):
 

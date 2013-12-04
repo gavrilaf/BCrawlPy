@@ -37,8 +37,9 @@ class Post(object):
 		self.status = Post.NEW
 
 	def __str__(self):
-		return '{%d, %s, %s, %s, %s, %s}' % (self.query_id, 
-			self.link, self.title, self.publish_date, self.author, self.host)
+		s = '{%d, %s, %s, %s, %s, %s}' % (self.query_id, self.link, self.title, self.publish_date, self.author, self.host)
+
+		return s
 
 class DayQuery(object):
 	def __init__(self, id_, query_id, text, day):
@@ -47,9 +48,9 @@ class DayQuery(object):
 		self.text = text
 		self.day = day
 
-	def __str__(self):
-		return '{%d, %d, %s, %s}' % (self.id, self.query_id, self.text, self.day)
-
+	def __unicode__(self):
+		return u'{%d, %d, %s, %s}' % (self.id, self.query_id, self.text, self.day)
+		
 class DayQueryStatus(object):
 	OK = 1
 	ERROR = 2
@@ -58,7 +59,7 @@ class DayQueryStatus(object):
 		self.id = id_
 		self.status = status
 
-	def __str__(self):
+	def __unicode__(self):
 		return '{%d, %d}' % (self.id, self.status)
 
 class MonitorMsg(object):
@@ -88,7 +89,7 @@ class MonitorMsg(object):
 		self.text = text
 		self.timestamp = datetime.datetime.utcnow()
 
-	def __str__(self):
+	def __unicode__(self):
 		return '{%d, %d, %s, %s, %s}' % (self.type, self.status, self.timestamp, self.id, self.text)
 
 	def mongo_rep(self):

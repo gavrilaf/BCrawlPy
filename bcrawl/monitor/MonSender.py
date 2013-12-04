@@ -20,6 +20,9 @@ class Sender(object):
 	def query_completed(self, query_id):
 		self.queue.put(MonitorMsg(MonitorMsg.QUERY_COMPLETED, MonitorMsg.OK, query_id, None)) 
 
+	def query_error(self, query_id):
+		self.queue.put(MonitorMsg(MonitorMsg.QUERY_COMPLETED, MonitorMsg.ERROR, query_id, None)) 
+
 	def search_http_request(self, provider, query_id):
 		self.queue.put(MonitorMsg(MonitorMsg.HTTP_SEARCH_YANDEX, MonitorMsg.OK, query_id, None)) # now only Yandex search is supported
 

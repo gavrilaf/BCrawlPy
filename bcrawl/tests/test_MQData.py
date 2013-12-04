@@ -15,7 +15,8 @@ class MQDataTests(unittest.TestCase):
  
 		p = MQData.Post.from_values(1, Consts.Providers.YANDEX, values)
 
-		self.assertEqual('{1, http://url, тест, 2013-10-21 19:34:00, author, None}', str(p))  
+		s = str(p)
+		self.assertEqual('{1, http://url, тест, 2013-10-21 19:34:00, author, None}', s)  
 
 		self.assertEqual(p.query_id, 1)
 		self.assertEqual(p.provider, Consts.Providers.YANDEX)

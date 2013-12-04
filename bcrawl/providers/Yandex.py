@@ -58,7 +58,7 @@ class Searcher(object):
 
 	def _send_request(self):
 		p = {
-			u'text': self.query.text, 
+			'text': self.query.text, 
 			'ft' : 'blog', 
 			'numdoc' : self.numdoc, 
 			'from_day' : self.query.day.day, 'from_month' : self.query.day.month, 'from_year' : self.query.day.year,
@@ -148,7 +148,7 @@ class SearchBroker(object):
 		self.searcher = Searcher(runner_name, monitor)
 
 	def read_day_posts(self, query, out_queue):
-		self.logger.info("Broker got query: %s" % query)
+		self.logger.info(u"Broker got query: %s" % unicode(query))
 
 		total_count = 0
 
