@@ -4,12 +4,13 @@
 class Runners(object):
 	SEARCH_CONTROLLER = 'controller'
 	YANDEX_SEARCHER = 'yandex-searcher'
-	FILTER = 'filter'
+	ROUTER = 'router'
 	YA_CONTENT_COLLECTOR = 'ya-content-collector'
 	LJ_CONTENT_COLLECTOR = 'lj-content-collector'
 	VK_CONTENT_COLLECTOR = 'vk-content-collector'
 	PERSISTER = 'persister'
 	MONITOR = 'monitor'
+	REPORTER = 'reporter'
 
 	TEST = 'test'
 
