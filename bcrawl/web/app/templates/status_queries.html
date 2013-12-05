@@ -21,8 +21,8 @@
     <div class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
         <li class="navbar-item-1"><a href="/status/collecting">Состояние сбора</a></li>
-        <li><a class="active navbar-item-1" href="#">Поисковые запросы</a></li>
-        <li><a class="navbar-item-1" href="/status/server">Состояние сервера</a></li>            
+        <li class="active navbar-item-1"><a href="#">Поисковые запросы</a></li>
+        <li class="navbar-item-1"><a href="/status/server">Состояние сервера</a></li>            
       </ul>
     </div><!-- /.navbar-collapse -->
   </nav>
@@ -48,44 +48,33 @@
                 <th width="25%">Now In progress</th>
               </thead>
               <tbody>
-                <tr>
-                  <td>Радикальный ислам</td>
-                  <td colspan="6">
-                    <div class="progress" style="margin-bottom: 2px">
-                      <div class="progress-bar progress-bar-info" style="width: 20%"></div>
-                    </div>
+                {% for obj in report.objects %}
+                  <tr>
+                    <td><strong>{{obj.name}}<strong></td>
+                    <td colspan="6">
+                      <div class="progress" style="margin-bottom: 2px">
+                        <div class="progress-bar progress-bar-info" style="width: {{obj.progress}}%"></div>
+                      </div>
                   </td>
-                </tr>
-                <tr>
-                  <td />
-                  <td>всемирный халифат</td>
-                  <td>20</td>
-                  <td>4</td>
-                  <td>5</td>
-                  <td>
-                    <div class="progress" style="margin-bottom: 2px">
-                      <div class="progress-bar progress-bar-info" style="width: 20%"></div>
-                    </div>
-                  </td>
-                  <td>
-                    29.11.2013, 30.11.2013, 1.12.2013
-                  </td>
-                </tr>
-                 <tr>
-                  <td />
-                  <td>джихад</td>
-                  <td>20</td>
-                  <td>4</td>
-                  <td>5</td>
-                  <td>
-                    <div class="progress" style="margin-bottom: 2px">
-                      <div class="progress-bar progress-bar-info" style="width: 20%"></div>
-                    </div>
-                  </td>
-                  <td>
-                    29.11.2013, 30.11.2013, 1.12.2013
-                  </td>
-                </tr>
+                  </tr>
+                  {% for query in obj.queries %}
+                    <tr>
+                      <td />
+                      <td>{{query.text}}</td>
+                      <td>{{query.total}}</td>
+                      <td>{{query.in_progress}}</td>
+                      <td>{{query.completed}}</td>
+                      <td>
+                        <div class="progress" style="margin-bottom: 2px">
+                          <div class="progress-bar progress-bar-info" style="width: {{query.progress}}%"></div>
+                        </div>
+                      </td>
+                      <td>
+                        {{query.in_progress_lst}}
+                      </td>
+                    </tr>
+                  {% endfor %}
+                {% endfor %}
               </tbody>
             </table>
           </div> <!-- panel-body -->

@@ -14,7 +14,7 @@
       $(document).ready(function(){
         function updateMonitor() {
           $.ajax({
-            url: 'http://127.0.0.1:5000/api/v1.0/cmon',
+            url: 'http://127.0.0.1:5000/api/v1.0/status/collecting',
             success: function(r) {
               // Queries
               $('#query-sent-hour').text(r.monitor.queries.sent.hour)
@@ -55,20 +55,20 @@
 
               // Yandex http total
 
-              $('#ya-total-success-hour').text(r.monitor.http.search.yandex.sent.hour+r.monitor.http.content.yandex.sent.hour)
-              $('#ya-total-success-day').text(r.monitor.http.search.yandex.sent.day+r.monitor.http.content.yandex.sent.day)
-              $('#ya-total-error-hour').text(r.monitor.http.search.yandex.error.hour+r.monitor.http.content.yandex.error.hour)
-              $('#ya-total-error-day').text(r.monitor.http.search.yandex.error.day+r.monitor.http.content.yandex.error.day)
+              $('#ya-total-sent-hour').text(r.monitor.http.search.yandex.sent.hour+r.monitor.http.content.yandex.sent.hour)
+              $('#ya-total-sent-day').text(r.monitor.http.search.yandex.sent.day+r.monitor.http.content.yandex.sent.day)
+              //$('#ya-total-error-hour').text(r.monitor.http.search.yandex.error.hour+r.monitor.http.content.yandex.error.hour)
+              //$('#ya-total-error-day').text(r.monitor.http.search.yandex.error.day+r.monitor.http.content.yandex.error.day)
 
-              $('#vk-total-success-hour').text(r.monitor.http.content.vk.sent.hour)
-              $('#vk-total-success-day').text(r.monitor.http.content.vk.sent.day)
-              $('#vk-total-error-hour').text(r.monitor.http.content.vk.error.hour)
-              $('#vk-total-error-day').text(r.monitor.http.content.vk.error.day)
+              $('#vk-total-sent-hour').text(r.monitor.http.content.vk.sent.hour)
+              $('#vk-total-sent-day').text(r.monitor.http.content.vk.sent.day)
+              //$('#vk-total-error-hour').text(r.monitor.http.content.vk.error.hour)
+              //$('#vk-total-error-day').text(r.monitor.http.content.vk.error.day)
 
-              $('#lj-total-success-hour').text(r.monitor.http.content.lj.sent.hour)
-              $('#lj-total-success-day').text(r.monitor.http.content.lj.sent.day)
-              $('#lj-total-error-hour').text(r.monitor.http.content.lj.error.hour)
-              $('#lj-total-error-day').text(r.monitor.http.content.lj.error.day)
+              $('#lj-total-sent-hour').text(r.monitor.http.content.lj.sent.hour)
+              $('#lj-total-sent-day').text(r.monitor.http.content.lj.sent.day)
+              //$('#lj-total-error-hour').text(r.monitor.http.content.lj.error.hour)
+              //$('#lj-total-error-day').text(r.monitor.http.content.lj.error.day)
 
               // Posts
  
@@ -122,37 +122,37 @@
     
     <div class="row">
       <div class="col-lg-12">
-        <div class="panel panel-primary">
+        <div class="panel panel-info">
           <div class="panel-heading">
             <h3 class="panel-title">
               Day queries 
             </h3>
           </div>
           <div class="panel-body">
-            <table class="table table-bordered table-condensed">
+            <table class="table table-condensed table-striped">
               <thead>
-              <tr>        
-                <th />
-                <th>Hour</th>
-                <th>Day</th>
-                <th>Total</th>
-              </tr>
+                <tr>        
+                  <th />
+                  <th>Hour</th>
+                  <th>Day</th>
+                  <th>Total</th>
+                </tr>
               </thead>
               <tbody>
               <tr>
-                <td>Sent</td>
+                <td><b>Sent</b></td>
                 <td id="query-sent-hour">N/A</td>
                 <td id="query-sent-day">N/A</td>
                 <td id="query-sent-all">N/A</td>
               </tr>
-              <tr class="success">
-                <td>Completed</td>
+              <tr>
+                <td><b>Completed</b></td>
                 <td id="query-completed-hour">N/A</td>
                 <td id="query-completed-day">N/A</td>
                 <td id="query-completed-all">N/A</td>
               </tr>
-              <tr class="warning">
-                <td>Errors</td>
+              <tr>
+                <td><b>Errors</b></td>
                 <td id="query-error-hour">N/A</td>
                 <td id="query-error-days">N/A</td>
                 <td id="query-error-all">N/A</td>
@@ -167,7 +167,7 @@
     <div class="row">
       <div class="col-lg-12">
 
-        <div class="panel panel-primary">
+        <div class="panel panel-info">
           <div class="panel-heading">
             <h3 class="panel-title">
               Http requests
@@ -175,207 +175,79 @@
           </div>
 
           <div class="panel-body">
-            <div class="row">
-              <div class="col-lg-4">
-                <div class="panel panel-info">
-                  <div class="panel-heading">
-                    <h3 class="panel-title">
-                      Total count
-                    </h3>
-                  </div>
-                  <div class="panel-body">
-                    <table class="table table-bordered table-condensed">
-                      <thead>
-                        <tr>
-                          <th></th>
-                          <th>Yandex</th>
-                          <th>Twitter</th>
-                          <th>LiveJournal</th>
-                          <th>VK</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>Sent (час)</td>
-                          <td id="ya-total-success-hour">N/A</td>
-                          <td id="tw-total-success-hour">N/A</td>
-                          <td id="lj-total-success-hour">N/A</td>
-                          <td id="vk-total-success-hour">N/A</td>
-                        </tr>
-                        <tr class="warning">
-                          <td>Errors (час)</td>
-                          <td id="ya-total-error-hour">N/A</td>
-                          <td id="tw-total-error-hour">N/A</td>
-                          <td id="lj-total-error-hour">N/A</td>
-                          <td id="vk-total-error-hour">N/A</td>
-                        </tr>
-                        <tr>
-                          <td>Sent (сутки)</td>
-                          <td id="ya-total-success-day">N/A</td>
-                          <td id="tw-total-success-day">N/A</td>
-                          <td id="lj-total-success-day">N/A</td>
-                          <td id="vk-total-success-day">N/A</td>
-                        </tr>
-                        <tr class="warning">
-                          <td>Errors (сутки)</td>
-                          <td id="ya-total-error-day">N/A</td>
-                          <td id="tw-total-error-day">N/A</td>
-                          <td id="lj-total-error-day">N/A</td>
-                          <td id="vk-total-error-day">N/A</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div> <!-- panel -->
-              </div> <!-- col-lg-4 -->
-            
-              <div class="col-lg-8">
-                <div class="panel panel-info">
-                  <div class="panel-heading">
-                    <h3 class="panel-title">
-                      Search
-                    </h3>
-                  </div>
-
-                  <div class="panel-body">
-                    <div class="col-lg-6">
-                      <table class="table table-bordered table-condensed">
-                        <thead>
-                          <tr>
-                            <th>Yandex</th>
-                            <th>Hour</th>
-                            <th>Day</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>Sent</td>
-                            <td id="ya-search-sent-hour">N/A</td>
-                            <td id="ya-search-sent-day">N/A</td>
-                          </tr>
-                          <tr class="warning">
-                            <td>Errors</td>
-                            <td id="ya-search-error-hour">N/A</td>
-                            <td id="ya-search-error-day">N/A</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div> <!-- col-lg-6 -->
-                    <div class="col-lg-6">
-                      <table class="table table-bordered table-condensed">
-                        <thead>
-                          <tr>
-                              <th>Twitter</th>
-                              <th>Hour</th>
-                              <th>Day</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                              <td>Sent</td>
-                              <td id="tw-search-sent-hour">N/A</td>
-                              <td id="tw-search-sent-day">N/A</td>
-                          </tr>
-                          <tr class="warning">
-                              <td>Errors</td>
-                              <td id="tw-search-error-hour">N/A</td>
-                              <td id="tw-search-error-day">N/A</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div> </div> <!-- col-lg-6 -->
-                  </div> <!-- panel-body -->
-                </div> <!-- panel -->
-              </div> <!-- col-lg-8 -->
-            </div> <!-- row -->
-
-            <div class="row no-margins">
-             <div class="col-lg-12">
-                <div class="panel panel-info">
-                  <div class="panel-heading">
-                    <h3 class="panel-title">
-                      Content collecting
-                    </h3>
-                  </div>
-                  
-                  <div class="panel-body">
-                
-                    <div class="col-lg-4">
-                      <table class="table  table-condensed table-bordered">
-                        <thead>
-                          <tr>
-                              <th>Yandex content</th>
-                              <th>Hour</th>
-                              <th>Day</th>                      
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                              <td>Sent</td>
-                              <td id="ya-content-sent-hour">N/A</td>
-                              <td id="ya-content-sent-day">N/A</td>                      
-                          </tr>
-                          <tr class="warning">
-                              <td>Errors</td>
-                              <td id="ya-content-error-hour">N/A</td>
-                              <td id="ya-content-error-day">N/A</td>                      
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div> <!-- col-lg-4 -->
-
-                    <div class="col-lg-4">
-                      <table class="table table-bordered table-condensed">
-                        <thead>
-                          <tr>
-                            <th>LJ content</th>
-                            <th>Час</th>
-                            <th>Сутки</th>                      
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>Sent</td>
-                            <td id="lj-content-sent-hour">N/A</td>
-                            <td id="lj-content-sent-day">N/A</td>                      
-                          </tr>
-                          <tr class="warning">
-                            <td>Errors</td>
-                            <td id="lj-content-error-hour">N/A</td>
-                            <td id="lj-content-error-day">N/A</td>                      
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div> <!-- col-lg-4 -->
-
-                    <div class="col-lg-4">
-                      <table class="table table-condensed table-bordered">
-                        <thead>
-                          <tr>
-                            <th>VK content</th>
-                            <th>Hour</th>
-                            <th>Day</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>Sent</td>
-                            <td id="vk-content-sent-hour">N/A</td>
-                            <td id="vk-content-sent-day">N/A</td>                      
-                          </tr>
-                          <tr class="warning">
-                            <td>Errors</td>
-                            <td id="vk-content-error-hour">N/A</td>
-                            <td id="vk-content-error-day">N/A</td>                      
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div> <!-- col-lg-4 -->
-                  
-                  </div> <!-- panel-body -->
-                </div> <!-- panel -->
-              </div><!-- col-lg-12 -->
-            </div> <!-- row -->
+            <table class="table table-condensed table-striped">
+              <thead>
+              <tr>        
+                <th>Provider</th>
+                <th>Search sent (h)</th>
+                <th>Search sent (d)</th>
+                <th>Content sent (h)</th>
+                <th>Content sent (d)</th>
+                <th>Search error (h)</th>
+                <th>Search error (d)</th>
+                <th>Content error (h)</th>
+                <th>Content error (d)</th>
+                <th>Total sent (h)</th>
+                <th>Total sent (d)</th>
+              </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><b>Yandex</b></td>
+                  <td id="ya-search-sent-hour">N/A</td>
+                  <td id="ya-search-sent-day">N/A</td>
+                  <td id="ya-content-sent-hour">N/A</td>
+                  <td id="ya-content-sent-day">N/A</td>  
+                  <td id="ya-search-error-hour">N/A</td>
+                  <td id="ya-search-error-day">N/A</td>
+                  <td id="ya-content-error-hour">N/A</td>
+                  <td id="ya-content-error-day">N/A</td>  
+                  <td id="ya-total-sent-hour">N/A</td>
+                  <td id="ya-total-sent-day">N/A</td>
+                </tr>
+                <tr>
+                  <td><b>Twitter</b></td>
+                  <td id="tw-search-sent-hour">N/A</td>
+                  <td id="tw-search-sent-day">N/A</td>
+                  <td />
+                  <td />
+                  <td id="tw-search-error-hour">N/A</td>
+                  <td id="tw-search-error-day">N/A</td>
+                  <td />
+                  <td />
+                  <td id="tw-total-sent-hour">N/A</td>
+                  <td id="tw-total-sent-day">N/A</td>
+                </tr>
+                <tr>
+                  <td><b>LJ</b></td>
+                  <td />
+                  <td />
+                  <td id="lj-content-sent-hour">N/A</td>
+                  <td id="lj-content-sent-day">N/A</td>  
+                  <td />
+                  <td />
+                  <td id="lj-content-error-hour">N/A</td>
+                  <td id="lj-content-error-day">N/A</td>  
+                  <td id="lj-total-sent-hour">N/A</td>
+                  <td id="lj-total-sent-day">N/A</td>
+                </tr>
+                <tr>
+                  <td><b>VK</b></td>
+                  <td />
+                  <td />
+                  <td id="vk-content-sent-hour">N/A</td>
+                  <td id="vk-content-sent-day">N/A</td>  
+                  <td />
+                  <td />
+                  <td id="vk-content-error-hour">N/A</td>
+                  <td id="vk-content-error-day">N/A</td>  
+                  <td id="vk-total-sent-hour">N/A</td>
+                  <td id="vk-total-sent-day">N/A</td>
+                </tr>
+             
+              </tbody>
+            </table> <!-- table -->         
+         
           </div> <!-- panel-body -->
         </div> <!-- panel -->
       </div> <!-- col-lg-12 -->
@@ -383,14 +255,14 @@
     
     <div class="row">
       <div class="col-lg-12">
-        <div class="panel panel-primary">
+        <div class="panel panel-info">
           <div class="panel-heading">
             <h3 class="panel-title">
               Posts processing
             </h3>
           </div>
           <div class="panel-body">
-            <table class="table table-bordered table-condensed">
+            <table class="table table-condensed table-striped">
             <thead>
               <tr>
                 <th />
@@ -401,43 +273,43 @@
             </thead>
             <tbody>
               <tr>
-                <td>Collected</td>
+                <td><b>Collected</b></td>
                 <td id="post-collected-hour">N/A</td>
                 <td id="post-collected-day">N/A</td>
                 <td id="post-collected-all">N/A</td>
               </tr>
               <tr>
-                <td>Dublicates</td>
+                <td><b>Dublicates</b></td>
                 <td id="post-dublicate-hour">N/A</td>
                 <td id="post-dublicate-day">N/A</td>
                 <td id="post-dublicate-all">N/A</td>
               </tr>
               <tr>
-                <td>Updates</td>
+                <td><b>Updates</b></td>
                 <td id="post-update-hour">N/A</td>
                 <td id="post-update-day">N/A</td>
                 <td id="post-update-all">N/A</td>
               </tr>
               <tr>
-                <td>New links</td>
+                <td><b>New links</b></td>
                 <td id="post-new-link-hour">N/A</td>
                 <td id="post-new-link-day">N/A</td>
                 <td id="post-new-link-all">N/A</td>
               </tr>
               <tr>
-                <td>Spam</td>
+                <td><b>Spam</b></td>
                 <td id="post-spam-hour">N/A</td>
                 <td id="post-spam-day">N/A</td>
                 <td id="post-spam-all">N/A</td>
               </tr>
               <tr class="warning">
-                <td>Errors</td>
+                <td><b>Errors</b></td>
                 <td id="post-error-hour">N/A</td>
                 <td id="post-error-day">N/A</td>
                 <td id="post-error-all">N/A</td>
               </tr>
-              <tr class="success">
-                <td>Stored</td>
+              <tr>
+                <td><b>Stored</b></td>
                 <td id="post-persisted-hour">N/A</td>
                 <td id="post-persisted-day">N/A</td>
                 <td id="post-persisted-all">N/A</td>
