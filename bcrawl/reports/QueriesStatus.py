@@ -20,8 +20,6 @@ class Generator(object):
 
 		objs = self.search_db.get_sobjects()
 		for obj in objs:
-
-			print obj.name
 			obj_rep = {'name' : obj.name, 'progress' : 0, 'queries' : []}
 
 			obj_day_query_total = 0
@@ -45,7 +43,7 @@ class Generator(object):
 					'total' : total, 
 					'in_progress' : len(in_progress),
 					'completed' : completed_count,
-					'in_progress_lst' : ','.join(in_progress),
+					'in_progress_lst' : ', '.join(in_progress),
 					'progress' : ( 100 * completed_count ) / total
 				}
 
@@ -65,10 +63,9 @@ class Report(object):
 	
 	def get_report(self, reports_db):
 		collection = reports_db[_REPORT_NAME]
-
-		reports = collection.find().sort('timestamp')
-		if reports:
-			return reports[0]['content']
+		report = collection.find_one()
+		if report:
+			return {'timestamp' : report['timestamp'].strftime('%d.%m.%Y %H:%M:%S'), 'content' : report['content'] }
 
 		return None
 

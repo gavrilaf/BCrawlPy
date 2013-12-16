@@ -3,7 +3,7 @@ from app import app
 from contextlib import closing
 
 from bcrawl.monitor import MonDB
-from bcrawl.reports import ReportContext, QueriesStatus
+from bcrawl.reports import ReportContext, QueriesStatus, PostsTotal
 
 
 def get_monitoring_report():
@@ -12,7 +12,14 @@ def get_monitoring_report():
 
 def get_collecting_status_report():
 	with closing(ReportContext.ReportContext(QueriesStatus.Report())) as report:
-		return report.get_report()
+		report =  report.get_report()
+		return report
+
+def get_posts_total_report():
+	with closing(ReportContext.ReportContext(PostsTotal.Report())) as report:
+		report =  report.get_report()
+		return report
+
 
 # REST API
 @app.route('/api/v1.0/status/collecting', methods = ['GET'])
@@ -36,3 +43,9 @@ def queries_status():
 @app.route('/status/server')
 def server_status():
     return render_template("status_server.html")
+
+# Reports pages
+
+@app.route('/reports/total')
+def report_total():
+    return render_template("report_total.html", report = get_posts_total_report())

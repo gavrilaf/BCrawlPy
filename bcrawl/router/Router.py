@@ -7,7 +7,7 @@ from bcrawl.router import BlogHost, Dublicates, PostInfoDB
 
 class Runner(MQ.BaseConsumer):
 	def __init__(self):
-		super(Runner, self).__init__(Consts.Queues.POSTS_4_FILTER, Consts.Runners.FILTER)
+		super(Runner, self).__init__(Consts.Queues.POSTS_4_ROUTE, Consts.Runners.ROUTER)
 
 		self.db = None
 
@@ -24,7 +24,7 @@ class Runner(MQ.BaseConsumer):
 		p = self.dub_handler.process(p)
 		self.notify_monitor(p)
 
-		print 'Status: %d' % p.status
+		#print 'Status: %d' % p.status
 		if p.status == MQData.Post.DUBLICATE: # Full dublicate found - do nothing
 			return 
 

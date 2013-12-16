@@ -86,6 +86,9 @@ class Repository(object):
 
 	def queries_completed(self, scope = SCOPE_ALL):
 		return self.collection.find(self.get_query('queries_completed', True, scope)).count()
+	
+	def queries_errors(self, scope = SCOPE_ALL):
+		return self.collection.find(self.get_query('queries_completed', False, scope)).count()
 
 	
 	def posts_collected(self, scope = SCOPE_ALL):
@@ -119,6 +122,11 @@ class Repository(object):
 				'hour' : self.queries_completed(SCOPE_HOUR),
 				'day' : self.queries_completed(SCOPE_DAY),
 				'all' : self.queries_completed()
+			},
+			'error' : {
+				'hour' : self.queries_errors(SCOPE_HOUR),
+				'day' : self.queries_errors(SCOPE_DAY),
+				'all' : self.queries_errors()
 			}
 		}
 

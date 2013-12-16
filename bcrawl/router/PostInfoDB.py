@@ -6,7 +6,7 @@ class PostInfo(object):
 
 	@staticmethod
 	def from_mongo(json) :
-		print 'from mongo: %s' % str(json)
+		#print 'from mongo: %s' % str(json)
 		pi = PostInfo()
 		pi.id = json['_id']
 		pi.link = json['link']
@@ -25,7 +25,7 @@ class PostInfo(object):
 		obj = {'link' : self.link, 'publish_date' : self.publish_date, 'queries' : self.queries}
 		if self.id is not None:
 			obj['_id'] = self.id
-		print 'mongo_rep: %s' % str(obj)
+		#print 'mongo_rep: %s' % str(obj)
 		return obj
 
 	def __unicode__(self):

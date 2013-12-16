@@ -16,7 +16,7 @@ class Runners(object):
 
 class Queues(object):
 	QUERIES = 'MQ_Queries4Search'
-	POSTS_4_FILTER = 'MQ_Posts4Filter'
+	POSTS_4_ROUTE = 'MQ_Posts4Filter'
 	POSTS_4_CONTENT_COLLECT_YA = 'MQ_Posts4Collect_Ya'
 	POSTS_4_CONTENT_COLLECT_LJ = 'MQ_Posts4Collect_Lj'
 	POSTS_4_CONTENT_COLLECT_VK = 'MQ_Posts4Collect_Vk'

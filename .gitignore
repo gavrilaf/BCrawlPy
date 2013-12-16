@@ -3,3 +3,5 @@
 *.log
 
 *.db
+
+data/search.db

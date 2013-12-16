@@ -23,6 +23,9 @@
               $('#query-completed-hour').text(r.monitor.queries.completed.hour)
               $('#query-completed-day').text(r.monitor.queries.completed.day)
               $('#query-completed-all').text(r.monitor.queries.completed.all)
+              $('#query-error-hour').text(r.monitor.queries.error.hour)
+              $('#query-error-day').text(r.monitor.queries.error.day)
+              $('#query-error-all').text(r.monitor.queries.error.all)
 
               // Http
 
@@ -154,7 +157,7 @@
               <tr>
                 <td><b>Errors</b></td>
                 <td id="query-error-hour">N/A</td>
-                <td id="query-error-days">N/A</td>
+                <td id="query-error-day">N/A</td>
                 <td id="query-error-all">N/A</td>
               </tr>
               </tbody>

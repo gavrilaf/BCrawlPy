@@ -34,59 +34,59 @@ class Searcher(object):
 	DEF_NUMDOC = 100
 
 	def __init__(self, runner_name, monitor, numdoc = DEF_NUMDOC):
-		self.logger = logging.getLogger(runner_name)
-		self.monitor = monitor
+		self._logger = logging.getLogger(runner_name)
+		self._monitor = monitor
 
-		self.query = ''
-		self.numdoc = numdoc
+		self._query = ''
+		self._numdoc = numdoc
 
-		self.yandex_count = 0
+		self._yandex_more = None
+		self._yandex_count = 0
+
+	@property
+	def yandex_count(self):
+		return self._yandex_count
 
 	def start_search(self, query):
-		self.query = query
-
-		self.finished = False
-		self.page = 0
-
+		self._query = query
 		return self._send_request()
 
 	def next(self):
-		if self.finished:
+		if self._yandex_more is None:
 			return []
 
 		return self._send_request()
 
 	def _send_request(self):
-		p = {
-			'text': self.query.text, 
-			'ft' : 'blog', 
-			'numdoc' : self.numdoc, 
-			'from_day' : self.query.day.day, 'from_month' : self.query.day.month, 'from_year' : self.query.day.year,
-			'to_day' : self.query.day.day, 'to_month' : self.query.day.month, 'to_year' : self.query.day.year}
+		if self._yandex_more is None:
+			p = {
+				'text': self._query.text, 
+				'ft' : 'blog', 
+				'numdoc' : self._numdoc, 
+				'from_day' : self._query.day.day, 'from_month' : self._query.day.month, 'from_year' : self._query.day.year,
+				'to_day' : self._query.day.day, 'to_month' : self._query.day.month, 'to_year' : self._query.day.year}
 
-		if self.page != 0:
-			p['p'] = self.page
+			response = requests.get("http://blogs.yandex.ru/search.rss", params=p)
+		else:
+			response = requests.get(self._yandex_more)
+
+
+		self._monitor.search_http_request(Consts.Providers.YANDEX, self._query.query_id)  # Notify monitor about http request
+		self._logger.info('Searcher: (%s, %d)' % (response.url, response.status_code))
 		
-		r = requests.get("http://blogs.yandex.ru/search.rss", params=p)
-
-		self.monitor.search_http_request(Consts.Providers.YANDEX, self.query.query_id)  # Notify monitor about http request
-		self.logger.info('Searcher: (%s, %d)' % (r.url, r.status_code))
+		if response.status_code != 200:
+			raise HttpError(response)
 		
-		if r.status_code != 200:
-			raise HttpError(r)
-		
-		self.page += 1
-		posts =  self._parse_response(r)
-
-		if len(posts) < self.numdoc:
-			self.finished = True
-
-		return posts
+		return self._parse_response(response)
 
 	def _parse_response(self, r):
 		xmldoc = xml.dom.minidom.parseString(r.text.encode('utf-8'))
 
-		self.yandex_count = _element_value(xmldoc, 'yablogs:count')
+		try:
+			self._yandex_count = _element_value(xmldoc, 'yablogs:count')
+			self._yandex_more = _element_value(xmldoc, 'yablogs:more')
+		except:
+			self._yandex_more = None
 	
 		posts = []
 		items = xmldoc.getElementsByTagName('item')
@@ -110,12 +110,12 @@ class Searcher(object):
 					values.append(_element_value(item, field))
 			except XmlTagError as e:
 				if field == 'link':
-					self.logger.warning('Yandex.Searcher: post without link!')
+					self._logger.warning('Yandex.Searcher: post without link!')
 					return None
-				self.log.warning('Yandex.Searcher: tag %s not found for post %s' % (e.tag, values[0]))
+				self._logger.warning('Yandex.Searcher: tag %s not found for post %s' % (e.tag, values[0]))
 				values.append('')
 
-		return MQData.Post.from_values(self.query.query_id, Consts.Providers.YANDEX, values)
+		return MQData.Post.from_values(self._query.query_id, Consts.Providers.YANDEX, values)
 
 	def _parse_author(self, item):
 		e = item.getElementsByTagName('author')
@@ -143,17 +143,17 @@ class SearchBroker(object):
 	'''
 
 	def __init__(self, runner_name, monitor):
-		self.logger = logging.getLogger(runner_name)
-		self.monitor = monitor
-		self.searcher = Searcher(runner_name, monitor)
+		self._logger = logging.getLogger(runner_name)
+		self._monitor = monitor
+		self._searcher = Searcher(runner_name, monitor)
 
 	def read_day_posts(self, query, out_queue):
-		self.logger.info(u"Broker got query: %s" % unicode(query))
+		self._logger.info(u"Broker got query: %s" % unicode(query))
 
 		total_count = 0
 
-		posts = self.searcher.start_search(query)
-		self.logger.info('Yandex count = %s' % self.searcher.yandex_count)
+		posts = self._searcher.start_search(query)
+		self._logger.info('Yandex count = %s' % self._searcher.yandex_count)
 
 		posts_count = len(posts)
 		while posts_count > 0:
@@ -161,14 +161,14 @@ class SearchBroker(object):
 				
 			for p in posts:
 				out_queue.put(p) 
-				self.monitor.post_collected(p.link)
+				self._monitor.post_collected(p.link)
 
-			self.logger.info('%s: collected %d posts' % (str(query.day), posts_count))
+			self._logger.info('%s: collected %d posts' % (str(query.day), posts_count))
 
-			posts = self.searcher.next()
+			posts = self._searcher.next()
 			posts_count = len(posts)
 			
-		self.logger.info('%s: Total collected %d posts' % (str(query.day), total_count))
+		self._logger.info('%s: Total collected %d posts' % (str(query.day), total_count))
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -180,8 +180,8 @@ class ContentReader(object):
 			* reader.read_content(url)
 	'''
 	def __init__(self, runner_name, monitor):
-		self.logger = logging.getLogger(runner_name)
-		self.monitor = monitor
+		self._logger = logging.getLogger(runner_name)
+		self._monitor = monitor
 
 	def read_content(self, url):
 		p = {
@@ -190,7 +190,7 @@ class ContentReader(object):
 
 		r = requests.get("http://blogs.yandex.ru/search.rss", params=p)
 
-		self.monitor.content_http_request(Consts.Providers.YANDEX, None)  # Notify monitor about http request
+		self._monitor.content_http_request(Consts.Providers.YANDEX, None)  # Notify monitor about http request
 		if r.status_code != 200:
 			raise HttpError(r)
 
