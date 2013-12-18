@@ -5,36 +5,36 @@ from bcrawl.monitor import MonSender
 
 class Runner(MQ.BaseProducer):
 	def __init__(self):
-		super(Runner, self).__init__(Consts.Queues.QUERIES, Consts.Queues.POSTS_4_FILTER, Consts.Runners.YANDEX_SEARCHER)
+		super(Runner, self).__init__(Consts.Queues.QUERIES, Consts.Queues.POSTS_4_ROUTE, Consts.Runners.YANDEX_SEARCHER)
 		
 	def process(self, p, out_queue):
 		try:
-			self.broker.read_day_posts(p, out_queue)
-			self.statuses_queue.put(MQData.DayQueryStatus(p.id, MQData.DayQueryStatus.OK))
+			self._broker.read_day_posts(p, out_queue)
+			self._statuses_queue.put(MQData.DayQueryStatus(p.id, MQData.DayQueryStatus.OK))
 			
 		except Errors.HttpError as e:
 			self.logger.error('Http error code %s on url %s' % (e.code, e.url))
 
-			self.statuses_queue.put(MQData.DayQueryStatus(p.id, MQData.DayQueryStatus.ERROR))
-			self.monitor.search_http_error(Consts.Providers.YANDEX, p.id, e.code, e.url)
+			self._statuses_queue.put(MQData.DayQueryStatus(p.id, MQData.DayQueryStatus.ERROR))
+			self._monitor.search_http_error(Consts.Providers.YANDEX, p.id, e.code, e.url)
 		
 		except Exception as e:
 			self.logger.exception(e)
 
-			self.statuses_queue.put(MQData.DayQueryStatus(p.id, MQData.DayQueryStatus.ERROR))
-			self.monitor.search_exception(Consts.Providers.YANDEX, p.id, e)
+			self._statuses_queue.put(MQData.DayQueryStatus(p.id, MQData.DayQueryStatus.ERROR))
+			self._monitor.search_exception(Consts.Providers.YANDEX, p.id, e)
 
 	def on_start(self, connection):
-		self.logger.info(self.name + ' is started')
+		super(Runner, self).on_start(connection)
+	
+		self._statuses_queue = MQ.BaseQueue(connection, Consts.Queues.QUERY_STATUSES, self.name)
+		self._monitor_queue =  MQ.BaseQueue(connection, Consts.Queues.MONITOR, self.name)
 
-		self.statuses_queue = MQ.BaseQueue(connection, Consts.Queues.QUERY_STATUSES, self.name)
-		self.monitor_queue =  MQ.BaseQueue(connection, Consts.Queues.MONITOR, self.name)
-
-		self.monitor = MonSender.Sender(self.monitor_queue)
-		self.broker = Yandex.SearchBroker(self.name, self.monitor)
+		self._monitor = MonSender.Sender(self._monitor_queue)
+		self._broker = Yandex.SearchBroker(self.name, self._monitor)
 				
 	def on_finish(self):
-		self.logger.info(self.name + ' is finished')
+		super(Runner, self).on_finish()
 
-		self.statuses_queue.close()
-		self.monitor_queue.close()
+		self._statuses_queue.close()
+		self._monitor_queue.close()

@@ -5,7 +5,7 @@ import datetime
 from dateutil.rrule import *
 from sqlalchemy import Column, Integer, String, Date, ForeignKey, DateTime
 from sqlalchemy.orm import relationship, backref
-from bcrawl.base import DB
+import DB
 
 
 class SObject(DB.Base):

@@ -54,7 +54,6 @@ class BaseConsumer(BaseLoggedObj):
 		super(BaseConsumer, self).__init__(runner_name)
 		self.queue_name = queue_name
 
-		
 	def run(self):
 		with kombu.Connection() as conn:
 			self.on_start(conn)
@@ -90,7 +89,6 @@ class BaseProducer(BaseLoggedObj):
 		self.in_queue_name = in_queue_name
 		self.out_queue_name = out_queue_name
 
-	
 	def run(self):
 		with kombu.Connection() as conn:
 			self.on_start(conn)

@@ -23,6 +23,7 @@ class Queues(object):
 	POSTS_4_PERSIST = 'MQ_Posts4Persist'
 	QUERY_STATUSES = 'MQ_QueryStatuses'
 	MONITOR = 'MQ_Monitor'
+	POST_ERRORS = 'MQ_PostsErrors'
 	
 
 class Providers(object):

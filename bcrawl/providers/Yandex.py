@@ -85,9 +85,12 @@ class Searcher(object):
 		try:
 			self._yandex_count = _element_value(xmldoc, 'yablogs:count')
 			self._yandex_more = _element_value(xmldoc, 'yablogs:more')
+
+			# Hack: replace search.xml on search.rss
+			self._yandex_more = self._yandex_more.replace('search.xml', 'search.rss')
 		except:
 			self._yandex_more = None
-	
+			
 		posts = []
 		items = xmldoc.getElementsByTagName('item')
 

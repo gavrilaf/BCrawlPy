@@ -8,7 +8,6 @@ class Repository(object):
 	def __init__(self, session):
 		self.session = session
 
-
 	def add_post(self, p):
 		blog_host = self.get_blog_host_by_name(p.host)
 		if blog_host is None:
@@ -34,7 +33,6 @@ class Repository(object):
 		self.session.commit()
 
 		return self.session.query(SearchDB.Post).filter_by(id=post.id).one()
-
 
 	def get_posts_by_query(self, query_id):
 		return self.session.query(SearchDB.Post).filter_by(query_id=query_id).all()
