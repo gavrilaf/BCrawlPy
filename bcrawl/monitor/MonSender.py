@@ -53,5 +53,8 @@ class Sender(object):
 	def post_new_link_detected(self, link):
 		self.queue.put(MonitorMsg(MonitorMsg.POST_NEW_LINK_DETECTED, MonitorMsg.OK, None, link))
 
+	def post_spam_detected(self, link):
+		self.queue.put(MonitorMsg(MonitorMsg.POST_SPAM_DETECTED, MonitorMsg.OK, None, link))
+
 	def post_persisted(self, post_id, link):
 		self.queue.put(MonitorMsg(MonitorMsg.POST_PERSISTED, MonitorMsg.OK, post_id, link))

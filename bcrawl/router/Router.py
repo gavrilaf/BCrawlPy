@@ -3,74 +3,89 @@
 
 from bcrawl.base import MQ, Consts, MQData
 from bcrawl.monitor import MonSender
-from bcrawl.router import BlogHost, Dublicates, PostInfoDB
+from bcrawl.router import BlogHost, Dublicates, PostInfoDB, Filters
 
 class Runner(MQ.BaseConsumer):
 	def __init__(self):
 		super(Runner, self).__init__(Consts.Queues.POSTS_4_ROUTE, Consts.Runners.ROUTER)
 
-		self.db = None
+		self._db = None
 
-		self.host_detector = None
-		self.dub_handler = None
+		self._host_detector = None
+		self._dub_handler = None
+		self._spam_handler = None
 
-		self.ya_queue = None
-		self.lj_queue = None
-		self.vk_queue = None
+		self._yandex_queue = None
+		self._common_queues = None
+
+		self._content_providers = [
+			'livejournal.com',
+			'vk.com',
+			'blogspot.com',
+			'liveinternet.com',
+			'ya.ru']
+		
 
 	def process(self, p):
 		self.logger.info('Router: %s' % p.link)
 		
-		p = self.dub_handler.process(p)
+		# check dublicates & updates
+		p = self._dub_handler.process(p)
 		self.notify_monitor(p)
-
-		#print 'Status: %d' % p.status
+		
 		if p.status == MQData.Post.DUBLICATE: # Full dublicate found - do nothing
+			self.logger.info('Dublicate detected')
 			return 
 
-		p.host = self.host_detector.get_blog_host(p.link)
+		# detect blog host
+		p.host = self._host_detector.get_blog_host(p.link)
+
+		# check spam
+		if self._spam_handler.is_spam(p):
+			self.logger.info('Spam detected')
+			self._monitor.post_spam_detected(p.link)
+			return
+
+		# route to queue
 		self.route_post(p)
 
 	def route_post(self, post):
-		if post.host == 'livejournal.com':
-			self.logger.info('%s routed to LJ' % post.link)
-			self.lj_queue.put(post)
-		elif post.host == 'vk.com':
-			self.logger.info('%s routed to VK' % post.link)
-			self.vk_queue.put(post)
+		if post.host in self._content_providers:
+			self.logger.info('%s (%s): routed to common collector' % (post.link, post.host))
+			self._common_queue.put(post)
 		else:
-			self.logger.info('%s routed to Yandex' % post.link)
-			self.ya_queue.put(post)
+			self.logger.info('%s: routed to Yandex' % post.link)
+			self._ya_queue.put(post)
 
 	def notify_monitor(self, p):
 		if p.status == MQData.Post.DUBLICATE:
-			self.monitor.post_dublicate_detected(p.link)
+			self._monitor.post_dublicate_detected(p.link)
 		elif p.status == MQData.Post.UPDATED:
-			self.monitor.post_update_detected(p.link)
+			self._monitor.post_update_detected(p.link)
 		elif p.status == MQData.Post.NEW_LINK:
-			self.monitor.post_new_link_detected(p.link)
+			self._monitor.post_new_link_detected(p.link)
 
 	def on_start(self, connection):
-		self.logger.info(self.name + ' is started')
+		super(Runner, self).on_start(connection)
 
-		self.db = PostInfoDB.Repository('bcrawl', 'post_info')
+		self._db = PostInfoDB.Repository('bcrawl', 'post_info')
 
-		self.host_detector = BlogHost.Detector()
-		self.dub_handler = Dublicates.Handler(self.db)
+		self._host_detector = BlogHost.Detector()
+		self._dub_handler = Dublicates.Handler(self._db)
+		self._spam_handler = Filters.SpamFiltersChain()
 
-		self.ya_queue = MQ.BaseQueue(connection, Consts.Queues.POSTS_4_CONTENT_COLLECT_YA, self.name)
-		self.lj_queue = MQ.BaseQueue(connection, Consts.Queues.POSTS_4_CONTENT_COLLECT_LJ, self.name)
-		self.vk_queue = MQ.BaseQueue(connection, Consts.Queues.POSTS_4_CONTENT_COLLECT_VK, self.name)
-
-		self.monitor_queue = MQ.BaseQueue(connection, Consts.Queues.MONITOR, self.name)
-
-		self.monitor = MonSender.Sender(self.monitor_queue)
+		self._ya_queue = MQ.BaseQueue(connection, Consts.Queues.POSTS_4_CONTENT_COLLECT_YA, self.name)
+		self._common_queue = MQ.BaseQueue(connection, Consts.Queues.POSTS_4_CONTENT_COLLECT_COMMON, self.name)
+		
+		self._monitor_queue = MQ.BaseQueue(connection, Consts.Queues.MONITOR, self.name)
+		self._monitor = MonSender.Sender(self._monitor_queue)
 		
 	def on_finish(self):
 		self.logger.info(self.name + ' is finished')
 
-		self.ya_queue.close()
-		self.lj_queue.close()
-		self.vk_queue.close()
+		self._ya_queue.close()
+		self._common_queue.close()
 
-		self.monitor_queue.close()
+		self._monitor_queue.close()
+
+		super(Runner, self).on_finish()
