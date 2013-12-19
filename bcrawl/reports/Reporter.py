@@ -5,8 +5,8 @@ import datetime
 import time
 from pymongo import MongoClient
 from bcrawl.base import MQ
-from bcrawl.base import DB
-from bcrawl.runners import Queries
+from bcrawl.db import DB
+from bcrawl.db import Queries
 
 import QueriesStatus
 import PostsTotal

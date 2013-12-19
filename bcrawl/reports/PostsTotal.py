@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
-from bcrawl.runners import SearchDB
+from bcrawl.db import SearchDB
 
 _REPORT_NAME = "PostsTotal"
 
