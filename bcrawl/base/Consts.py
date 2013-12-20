@@ -27,6 +27,30 @@ class Providers(object):
 	TWITTER = 2
 	LJ = 3
 	VK = 4
-	YA_BLOGS = 5
-	LI = 6
-	BLOGSPOT = 7
+	YA_BLOG = 5
+	BLOGSPOT = 6
+	LJ_ROSSIA = 7
+
+	CONTENT_PROVIDERS = {
+		'livejournal.com' : LJ, 
+		'vk.com' : VK,
+		'ya.ru' : YA_BLOG,
+		'blogspot.com' : BLOGSPOT,
+		'lj.rossia.org' : LJ_ROSSIA }
+
+	@staticmethod
+	def content_provider_by_host(host):
+		if host in CONTENT_PROVIDERS:
+			return CONTENT_PROVIDERS[host]
+		return -1
+
+
+class MongoDBs(object):
+	MAIN = 'bcrawl-main'
+	REPORTS = 'bcrawl-reports'
+	TEST = 'bcrawl-test'
+
+class MgColls(object):
+	MONITOR = 'monitor'
+	POST_INFO = 'post-info'
+

@@ -1,6 +1,7 @@
 import datetime
 import copy
 from pymongo import MongoClient
+from bcrawl.base.Consts import Providers
 from bcrawl.base.MQData import MonitorMsg
 
 SCOPE_ALL = 1
@@ -12,23 +13,29 @@ class Repository(object):
 		Interface to monitor database.
 		Used from nonitor runner and monitor web.
 	"""
-	def __init__(self, db_name = 'bcrawl', collection_name = 'monitor'):
+	def __init__(self, db_name, collection_name):
 		self.client = MongoClient(tz_aware=True)
 		self.db = self.client[db_name]
 		self.collection = self.db[collection_name]
 
-		self.queries = {'yandex_search' : 		{'type' : MonitorMsg.HTTP_SEARCH_YANDEX},
-						'yandex_content' : 		{'type' : MonitorMsg.HTTP_CONTENT_YANDEX},
-						'lj_content' : 			{'type' : MonitorMsg.HTTP_CONTENT_LJ},
-						'vk_content' : 			{'type' : MonitorMsg.HTTP_CONTENT_VK},
-						'queries_sent' : 		{'type' : MonitorMsg.QUERY_SENT},
-						'queries_completed' : 	{'type' : MonitorMsg.QUERY_COMPLETED},
-						'posts_collected' :		{'type' : MonitorMsg.POST_COLLECTED},
-						'posts_dublicate' :		{'type' : MonitorMsg.POST_DUBLICATE_DETECTED},
-						'posts_update' :		{'type' : MonitorMsg.POST_UPDATE_DETECTED},
-						'posts_new_link' :		{'type' : MonitorMsg.POST_NEW_LINK_DETECTED},
-						'posts_spam' :			{'type' : MonitorMsg.POST_SPAM_DETECTED},
-						'posts_persisted' :		{'type' : MonitorMsg.POST_PERSISTED}}
+		self.queries = {
+			'yandex_search' : 		{'type' : MonitorMsg.HTTP_SEARCH, 'provider' : Providers.YANDEX},
+			'twitter_search' : 		{'type' : MonitorMsg.HTTP_SEARCH, 'provider' : Providers.TWITTER},
+			'yandex_content' : 		{'type' : MonitorMsg.HTTP_CONTENT, 'provider' : Providers.YANDEX},
+			'lj_content' : 			{'type' : MonitorMsg.HTTP_CONTENT, 'provider' : Providers.LJ},
+			'vk_content' : 			{'type' : MonitorMsg.HTTP_CONTENT, 'provider' : Providers.VK},
+			'ya_blog_content' : 	{'type' : MonitorMsg.HTTP_CONTENT, 'provider' : Providers.YA_BLOG},
+			'blogspot_content' : 	{'type' : MonitorMsg.HTTP_CONTENT, 'provider' : Providers.BLOGSPOT},
+			'blogspot_content' : 	{'type' : MonitorMsg.HTTP_CONTENT, 'provider' : Providers.BLOGSPOT},
+			'lj_rossia_content' : 	{'type' : MonitorMsg.HTTP_CONTENT, 'provider' : Providers.LJ_ROSSIA},
+			'queries_sent' : 		{'type' : MonitorMsg.QUERY_SENT},
+			'queries_completed' : 	{'type' : MonitorMsg.QUERY_COMPLETED},
+			'posts_collected' :		{'type' : MonitorMsg.POST_COLLECTED},
+			'posts_dublicate' :		{'type' : MonitorMsg.POST_DUBLICATE_DETECTED},
+			'posts_update' :		{'type' : MonitorMsg.POST_UPDATE_DETECTED},
+			'posts_new_link' :		{'type' : MonitorMsg.POST_NEW_LINK_DETECTED},
+			'posts_spam' :			{'type' : MonitorMsg.POST_SPAM_DETECTED},
+			'posts_persisted' :		{'type' : MonitorMsg.POST_PERSISTED}}
 
 	def close(self):
 		self.client.close()
@@ -42,7 +49,9 @@ class Repository(object):
 	def get_query(self, name, success, scope):
 		query = copy.deepcopy(self.queries[name])
 
-		if success:
+		print name, success, scope
+
+		if success == True:
 			query['status'] = MonitorMsg.OK
 		else:
 			query['status'] = MonitorMsg.ERROR
@@ -53,33 +62,42 @@ class Repository(object):
 		elif scope == SCOPE_HOUR:
 			t = datetime.datetime.utcnow() - datetime.timedelta(hours = 1)
 			query.update({"timestamp": {"$gte": t}})
-
+		print query
 		return query
 
-	def yandex_search_requests(self, scope = SCOPE_ALL):
-		return self.collection.find(self.get_query('yandex_search', True, scope)).count()
+	# http search
+
+	def yandex_search_requests(self, success, scope = SCOPE_ALL):
+		return self.collection.find(self.get_query('yandex_search', success, scope)).count()
+
+	def twitter_search_requests(self, success, scope = SCOPE_ALL):
+		return self.collection.find(self.get_query('twitter_search', success, scope)).count()
+
+	# http content
 		
-	def yandex_content_requests(self, scope = SCOPE_ALL):
-		return self.collection.find(self.get_query('yandex_content', True, scope)).count()
+	def yandex_content_requests(self, success, scope = SCOPE_ALL):
+		return self.collection.find(self.get_query('yandex_content', success, scope)).count()
 
-	def lj_content_requests(self, scope = SCOPE_ALL):
-		return self.collection.find(self.get_query('lj_content', True, scope)).count()
+	def lj_content_requests(self, success, scope = SCOPE_ALL):
+		return self.collection.find(self.get_query('lj_content', success, scope)).count()
 
-	def vk_content_requests(self, scope = SCOPE_ALL):
-		return self.collection.find(self.get_query('vk_content', True, scope)).count()
+	def vk_content_requests(self, success, scope = SCOPE_ALL):
+		return self.collection.find(self.get_query('vk_content', success, scope)).count()
 
-	def yandex_search_errors(self, scope = SCOPE_ALL):
-		return self.collection.find(self.get_query('yandex_search', False, scope)).count()
+	def vk_content_requests(self, success, scope = SCOPE_ALL):
+		return self.collection.find(self.get_query('vk_content', success, scope)).count()
+
+	def ya_blog_content_requests(self, success, scope = SCOPE_ALL):
+		return self.collection.find(self.get_query('ya_blog_content', success, scope)).count()
+
+	def blogspot_content_requests(self, success, scope = SCOPE_ALL):
+		return self.collection.find(self.get_query('blogspot_content', success, scope)).count()
+
+	def lj_rossia_content_requests(self, success, scope = SCOPE_ALL):
+		return self.collection.find(self.get_query('lj_rossia_content', success, scope)).count()
 		
-	def yandex_content_errors(self, scope = SCOPE_ALL):
-		return self.collection.find(self.get_query('yandex_content', False, scope)).count()
-
-	def lj_content_errors(self, scope = SCOPE_ALL):
-		return self.collection.find(self.get_query('lj_content', False, scope)).count()
-
-	def vk_content_errors(self, scope = SCOPE_ALL):
-		return self.collection.find(self.get_query('vk_content', False, scope)).count()
-
+	
+	# queries
 
 	def queries_sent(self, scope = SCOPE_ALL):
 		return self.collection.find(self.get_query('queries_sent', True, scope)).count()
@@ -90,7 +108,8 @@ class Repository(object):
 	def queries_errors(self, scope = SCOPE_ALL):
 		return self.collection.find(self.get_query('queries_completed', False, scope)).count()
 
-	
+	# posts
+
 	def posts_collected(self, scope = SCOPE_ALL):
 		return self.collection.find(self.get_query('posts_collected', True, scope)).count()
 
@@ -134,44 +153,74 @@ class Repository(object):
 			'search' : {
 				'yandex' : {
 					'sent' : {
-						'hour' : self.yandex_search_requests(SCOPE_HOUR),
-						'day' : self.yandex_search_requests(SCOPE_DAY)
+						'hour' : self.yandex_search_requests(True, SCOPE_HOUR),
+						'day' : self.yandex_search_requests(True, SCOPE_DAY)
 					},
 					'error' : {
-						'hour' : self.yandex_search_errors(SCOPE_HOUR),
-						'day' : self.yandex_search_errors(SCOPE_DAY)
+						'hour' : self.yandex_search_requests(False, SCOPE_HOUR),
+						'day' : self.yandex_search_requests(False, SCOPE_DAY)
 					}
 				}
 			},
 			'content' : {
 				'yandex' : {
 					'sent' : {
-						'hour' : self.yandex_content_requests(SCOPE_HOUR),
-						'day' : self.yandex_content_requests(SCOPE_DAY)
+						'hour' : self.yandex_content_requests(True, SCOPE_HOUR),
+						'day' : self.yandex_content_requests(True, SCOPE_DAY)
 					},
 					'error' : {
-						'hour' : self.yandex_content_errors(SCOPE_HOUR),
-						'day' : self.yandex_content_errors(SCOPE_DAY)
+						'hour' : self.yandex_content_requests(False, SCOPE_HOUR),
+						'day' : self.yandex_content_requests(False, SCOPE_DAY)
 					}
 				},
 				'lj' : {
 					'sent' : {
-						'hour' : self.lj_content_requests(SCOPE_HOUR),
-						'day' : self.lj_content_requests(SCOPE_DAY)
+						'hour' : self.lj_content_requests(True, SCOPE_HOUR),
+						'day' : self.lj_content_requests(True, SCOPE_DAY)
 					},
 					'error' : {
-						'hour' : self.lj_content_errors(SCOPE_HOUR),
-						'day' : self.lj_content_errors(SCOPE_DAY)
+						'hour' : self.lj_content_requests(False, SCOPE_HOUR),
+						'day' : self.lj_content_requests(False, SCOPE_DAY)
 					}
 				},
 				'vk' : {
 					'sent' : {
-						'hour' : self.vk_content_requests(SCOPE_HOUR),
-						'day' : self.vk_content_requests(SCOPE_DAY)
+						'hour' : self.vk_content_requests(True, SCOPE_HOUR),
+						'day' : self.vk_content_requests(True, SCOPE_DAY)
 					},
 					'error' : {
-						'hour' : self.vk_content_errors(SCOPE_HOUR),
-						'day' : self.vk_content_errors(SCOPE_DAY)
+						'hour' : self.vk_content_requests(False, SCOPE_HOUR),
+						'day' : self.vk_content_requests(False, SCOPE_DAY)
+					}
+				},
+				'ya_blog' : {
+					'sent' : {
+						'hour' : self.ya_blog_content_requests(True, SCOPE_HOUR),
+						'day' : self.ya_blog_content_requests(True, SCOPE_DAY)
+					},
+					'error' : {
+						'hour' : self.ya_blog_content_requests(False, SCOPE_HOUR),
+						'day' : self.ya_blog_content_requests(False, SCOPE_DAY)
+					}
+				},
+				'blogspot' : {
+					'sent' : {
+						'hour' : self.blogspot_content_requests(True, SCOPE_HOUR),
+						'day' : self.blogspot_content_requests(True, SCOPE_DAY)
+					},
+					'error' : {
+						'hour' : self.blogspot_content_requests(False, SCOPE_HOUR),
+						'day' : self.blogspot_content_requests(False, SCOPE_DAY)
+					}
+				},
+				'lj_rossia' : {
+					'sent' : {
+						'hour' : self.lj_rossia_content_requests(True, SCOPE_HOUR),
+						'day' : self.lj_rossia_content_requests(True, SCOPE_DAY)
+					},
+					'error' : {
+						'hour' : self.lj_rossia_content_requests(False, SCOPE_HOUR),
+						'day' : self.lj_rossia_content_requests(False, SCOPE_DAY)
 					}
 				}
 			}

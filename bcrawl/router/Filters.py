@@ -15,7 +15,7 @@ class SpamFiltersChain(object):
 
 class DomainSpamFilter(object):
 	def __init__(self):
-		self.spam_hosts = ['3dn.ru']
+		self.spam_hosts = ['3dn.ru', 'my1.ru']
 
 	def is_spam(self, post):
 		if post.host in self.spam_hosts:

@@ -1,13 +1,14 @@
 import unittest
 import datetime
 from bcrawl.monitor import MonDB
+from bcrawl.base import Consts
 from bcrawl.base.MQData import MonitorMsg
 
 
 class MonitorDBTests(unittest.TestCase):
 
 	def setUp(self):
-		self.db = MonDB.Repository(db_name = 'bcrawl_test', collection_name = 'monitor_test')
+		self.db = MonDB.Repository(db_name = Consts.MongoDBs.TEST, collection_name = Consts.MgColls.MONITOR)
 
 	def tearDown(self):
 		self.db.clear_table()
@@ -15,43 +16,43 @@ class MonitorDBTests(unittest.TestCase):
 		self.db = None
 
 	def test_http_requests(self):
-		self.assertEqual(self.db.yandex_search_requests(), 0)
-		self.assertEqual(self.db.yandex_content_requests(), 0)
-		self.assertEqual(self.db.lj_content_requests(), 0)
-		self.assertEqual(self.db.vk_content_requests(), 0)
+		self.assertEqual(self.db.yandex_search_requests(True), 0)
+		self.assertEqual(self.db.yandex_content_requests(True), 0)
+		self.assertEqual(self.db.lj_content_requests(True), 0)
+		self.assertEqual(self.db.vk_content_requests(True), 0)
 
-		self.db.store_msg(MonitorMsg(MonitorMsg.HTTP_SEARCH_YANDEX, MonitorMsg.OK, 1, None))
-		self.db.store_msg(MonitorMsg(MonitorMsg.HTTP_CONTENT_YANDEX, MonitorMsg.OK, None, 'http://test'))
-		self.db.store_msg(MonitorMsg(MonitorMsg.HTTP_CONTENT_VK, MonitorMsg.OK, None, 'http://test'))
-		self.db.store_msg(MonitorMsg(MonitorMsg.HTTP_CONTENT_LJ, MonitorMsg.OK, None, 'http://test'))
+		self.db.store_msg(MonitorMsg(MonitorMsg.HTTP_SEARCH, Consts.Providers.YANDEX, MonitorMsg.OK, 1, None))
+		self.db.store_msg(MonitorMsg(MonitorMsg.HTTP_CONTENT, Consts.Providers.YANDEX, MonitorMsg.OK, None, 'http://test'))
+		self.db.store_msg(MonitorMsg(MonitorMsg.HTTP_CONTENT, Consts.Providers.VK, MonitorMsg.OK, None, 'http://test'))
+		self.db.store_msg(MonitorMsg(MonitorMsg.HTTP_CONTENT, Consts.Providers.LJ, MonitorMsg.OK, None, 'http://test'))
 
-		self.assertEqual(self.db.yandex_search_requests(), 1)
-		self.assertEqual(self.db.yandex_content_requests(), 1)
-		self.assertEqual(self.db.lj_content_requests(), 1)
-		self.assertEqual(self.db.vk_content_requests(), 1)
+		self.assertEqual(self.db.yandex_search_requests(True), 1)
+		self.assertEqual(self.db.yandex_content_requests(True), 1)
+		self.assertEqual(self.db.lj_content_requests(True), 1)
+		self.assertEqual(self.db.vk_content_requests(True), 1)
 
 	def test_http_requests_err(self):
-		self.assertEqual(self.db.yandex_search_requests(), 0)
-		self.assertEqual(self.db.yandex_content_requests(), 0)
-		self.assertEqual(self.db.lj_content_requests(), 0)
-		self.assertEqual(self.db.vk_content_requests(), 0)
+		self.assertEqual(self.db.yandex_search_requests(False), 0)
+		self.assertEqual(self.db.yandex_content_requests(False), 0)
+		self.assertEqual(self.db.lj_content_requests(False), 0)
+		self.assertEqual(self.db.vk_content_requests(False), 0)
 
-		self.db.store_msg(MonitorMsg(MonitorMsg.HTTP_SEARCH_YANDEX, MonitorMsg.ERROR, 1, 'error'))
-		self.db.store_msg(MonitorMsg(MonitorMsg.HTTP_CONTENT_YANDEX, MonitorMsg.ERROR, None, 'error'))
-		self.db.store_msg(MonitorMsg(MonitorMsg.HTTP_CONTENT_VK, MonitorMsg.ERROR, None, 'error'))
-		self.db.store_msg(MonitorMsg(MonitorMsg.HTTP_CONTENT_LJ, MonitorMsg.ERROR, None, 'error'))
+		self.db.store_msg(MonitorMsg(MonitorMsg.HTTP_SEARCH, Consts.Providers.YANDEX, MonitorMsg.ERROR, 1, 'error'))
+		self.db.store_msg(MonitorMsg(MonitorMsg.HTTP_CONTENT, Consts.Providers.YANDEX, MonitorMsg.ERROR, None, 'error'))
+		self.db.store_msg(MonitorMsg(MonitorMsg.HTTP_CONTENT, Consts.Providers.VK, MonitorMsg.ERROR, None, 'error'))
+		self.db.store_msg(MonitorMsg(MonitorMsg.HTTP_CONTENT, Consts.Providers.LJ, MonitorMsg.ERROR, None, 'error'))
 
-		self.assertEqual(self.db.yandex_search_errors(), 1)
-		self.assertEqual(self.db.yandex_content_errors(), 1)
-		self.assertEqual(self.db.lj_content_errors(), 1)
-		self.assertEqual(self.db.vk_content_errors(), 1)
+		self.assertEqual(self.db.yandex_search_requests(False), 1)
+		self.assertEqual(self.db.yandex_content_requests(False), 1)
+		self.assertEqual(self.db.lj_content_requests(False), 1)
+		self.assertEqual(self.db.vk_content_requests(False), 1)
 
 	def test_queries(self):
 		self.assertEqual(self.db.queries_sent(), 0)
 		self.assertEqual(self.db.queries_completed(), 0)
 
-		self.db.store_msg(MonitorMsg(MonitorMsg.QUERY_SENT, MonitorMsg.OK, 1, None))
-		self.db.store_msg(MonitorMsg(MonitorMsg.QUERY_COMPLETED, MonitorMsg.OK, 1, None))
+		self.db.store_msg(MonitorMsg(MonitorMsg.QUERY_SENT, -1, MonitorMsg.OK, 1, None))
+		self.db.store_msg(MonitorMsg(MonitorMsg.QUERY_COMPLETED, -1, MonitorMsg.OK, 1, None))
 
 		self.assertEqual(self.db.queries_sent(), 1)
 		self.assertEqual(self.db.queries_completed(), 1)
@@ -63,12 +64,12 @@ class MonitorDBTests(unittest.TestCase):
 		self.assertEqual(self.db.posts_new_link_detected(), 0)
 		self.assertEqual(self.db.posts_persisted(), 0)
 
-		self.db.store_msg(MonitorMsg(MonitorMsg.POST_COLLECTED, MonitorMsg.OK, 1, None))
-		self.db.store_msg(MonitorMsg(MonitorMsg.POST_DUBLICATE_DETECTED, MonitorMsg.OK, 1, None))
-		self.db.store_msg(MonitorMsg(MonitorMsg.POST_UPDATE_DETECTED, MonitorMsg.OK, 1, None))
-		self.db.store_msg(MonitorMsg(MonitorMsg.POST_NEW_LINK_DETECTED, MonitorMsg.OK, 1, None))
-		self.db.store_msg(MonitorMsg(MonitorMsg.POST_SPAM_DETECTED, MonitorMsg.OK, 1, None))
-		self.db.store_msg(MonitorMsg(MonitorMsg.POST_PERSISTED, MonitorMsg.OK, 1, None))
+		self.db.store_msg(MonitorMsg(MonitorMsg.POST_COLLECTED, -1, MonitorMsg.OK, 1, None))
+		self.db.store_msg(MonitorMsg(MonitorMsg.POST_DUBLICATE_DETECTED, -1, MonitorMsg.OK, 1, None))
+		self.db.store_msg(MonitorMsg(MonitorMsg.POST_UPDATE_DETECTED, -1, MonitorMsg.OK, 1, None))
+		self.db.store_msg(MonitorMsg(MonitorMsg.POST_NEW_LINK_DETECTED, -1, MonitorMsg.OK, 1, None))
+		self.db.store_msg(MonitorMsg(MonitorMsg.POST_SPAM_DETECTED, -1, MonitorMsg.OK, 1, None))
+		self.db.store_msg(MonitorMsg(MonitorMsg.POST_PERSISTED, -1, MonitorMsg.OK, 1, None))
 		
 
 		self.assertEqual(self.db.posts_collected(), 1)
@@ -78,9 +79,9 @@ class MonitorDBTests(unittest.TestCase):
 		self.assertEqual(self.db.posts_persisted(), 1)
 
 	def test_hour_requests(self):
-		self.assertEqual(self.db.yandex_search_requests(), 0)
+		self.assertEqual(self.db.yandex_search_requests(True), 0)
 
-		msg = MonitorMsg(MonitorMsg.HTTP_SEARCH_YANDEX, MonitorMsg.OK, 1, None)
+		msg = MonitorMsg(MonitorMsg.HTTP_SEARCH, Consts.Providers.YANDEX, MonitorMsg.OK, 1, None)
 		self.db.store_msg(msg)
 
 		one_hour = datetime.datetime.utcnow() - datetime.timedelta(minutes = 59, seconds = 59)
@@ -92,12 +93,12 @@ class MonitorDBTests(unittest.TestCase):
 		msg.timestamp = two_hours
 		self.db.store_msg(msg)
 
-		self.assertEqual(self.db.yandex_search_requests(MonDB.SCOPE_HOUR), 2)
+		self.assertEqual(self.db.yandex_search_requests(True, MonDB.SCOPE_HOUR), 2)
 
 	def test_day_requests(self):
-		self.assertEqual(self.db.yandex_search_requests(), 0)
+		self.assertEqual(self.db.yandex_search_requests(True), 0)
 
-		msg = MonitorMsg(MonitorMsg.HTTP_SEARCH_YANDEX, MonitorMsg.OK, 1, None)
+		msg = MonitorMsg(MonitorMsg.HTTP_SEARCH, Consts.Providers.YANDEX, MonitorMsg.OK, 1, None)
 		self.db.store_msg(msg)
 
 		one_day = datetime.datetime.utcnow() - datetime.timedelta(hours = 23, minutes = 59, seconds = 59)
@@ -109,7 +110,7 @@ class MonitorDBTests(unittest.TestCase):
 		msg.timestamp = two_days
 		self.db.store_msg(msg)
 
-		self.assertEqual(self.db.yandex_search_requests(MonDB.SCOPE_DAY), 2)
+		self.assertEqual(self.db.yandex_search_requests(True ,MonDB.SCOPE_DAY), 2)
 
 
 	def test_status_full(self):

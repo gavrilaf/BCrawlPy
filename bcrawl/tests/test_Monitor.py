@@ -14,7 +14,7 @@ class MockDbQueue(object):
 class MonitorTests(unittest.TestCase):
 
 	def setUp(self):
-		self.db = MonDB.Repository(db_name = 'bcrawl_test', collection_name = 'monitor_test')
+		self.db = MonDB.Repository(db_name = Consts.MongoDBs.TEST, collection_name = Consts.MgColls.MONITOR)
 		self.queue = MockDbQueue(self.db)
 		self.monitor = MonSender.Sender(self.queue)
 

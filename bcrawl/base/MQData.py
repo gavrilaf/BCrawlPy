@@ -36,6 +36,8 @@ class Post(object):
 		self.collected = datetime.datetime.utcnow()
 		self.status = Post.NEW
 
+		self.content_error = False
+
 	def __str__(self):
 		s = '{%d, %s, %s, %s, %s, %s}' % (self.query_id, self.link, self.title, self.publish_date, self.author, self.host)
 
@@ -66,34 +68,41 @@ class MonitorMsg(object):
 	QUERY_SENT = 1
 	QUERY_COMPLETED = 2
 
-	HTTP_SEARCH_YANDEX = 3
-	HTTP_CONTENT_YANDEX = 4
-	HTTP_CONTENT_LJ = 5
-	HTTP_CONTENT_VK = 6
-
-	POST_COLLECTED = 7
-	POST_DUBLICATE_DETECTED = 8
-	POST_UPDATE_DETECTED = 9
-	POST_NEW_LINK_DETECTED = 10
-	POST_SPAM_DETECTED = 11
+	HTTP_SEARCH = 3
+	HTTP_CONTENT = 4
 	
-	POST_PERSISTED = 12
+	POST_COLLECTED = 5
+	POST_DUBLICATE_DETECTED = 6
+	POST_UPDATE_DETECTED = 7
+	POST_NEW_LINK_DETECTED = 8
+	POST_SPAM_DETECTED = 9
+	
+	POST_PERSISTED = 10
 
 	OK = 1
 	ERROR = 2
 	
-	def __init__(self, type_, status, id_, text):
+	def __init__(self, type_, provider, status, id_, text):
 		self.type = type_
+		self.provider = provider
 		self.status = status
 		self.id = id_
 		self.text = text
 		self.timestamp = datetime.datetime.utcnow()
 
 	def __unicode__(self):
-		return '{%d, %d, %s, %s, %s}' % (self.type, self.status, self.timestamp, self.id, self.text)
+		return '{%d, %d, %d, %s, %s, %s}' % (self.type, self.provider, self.status, self.timestamp, self.id, self.text)
 
 	def mongo_rep(self):
-		obj = {'type' : self.type, 'status' : self.status, 'timestamp' : self.timestamp, 'obj_id' : self.id, 'text' : self.text}
+		obj = {
+			'type' : self.type, 
+			'provider' : self.provider, 
+			'status' : self.status, 
+			'timestamp' : self.timestamp, 
+			'obj_id' : self.id, 
+			'text' : self.text
+		}
+
 		return obj
 
 

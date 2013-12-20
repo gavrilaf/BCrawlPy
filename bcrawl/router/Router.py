@@ -18,14 +18,6 @@ class Runner(MQ.BaseConsumer):
 		self._yandex_queue = None
 		self._common_queues = None
 
-		self._content_providers = [
-			'livejournal.com',
-			'vk.com',
-			'blogspot.com',
-			'liveinternet.com',
-			'ya.ru']
-		
-
 	def process(self, p):
 		self.logger.info('Router: %s' % p.link)
 		
@@ -50,7 +42,7 @@ class Runner(MQ.BaseConsumer):
 		self.route_post(p)
 
 	def route_post(self, post):
-		if post.host in self._content_providers:
+		if post.host in Const.Providers.CONTENT_PROVIDERS:
 			self.logger.info('%s (%s): routed to common collector' % (post.link, post.host))
 			self._common_queue.put(post)
 		else:

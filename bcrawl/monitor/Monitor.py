@@ -7,13 +7,13 @@ class Runner(MQ.BaseConsumer):
 		super(Runner, self).__init__(Consts.Queues.MONITOR, Consts.Runners.MONITOR)
 
 	def process(self, p):
-		self.repository.store_msg(p)
+		self._repository.store_msg(p)
 		self.logger.info(unicode(p))
 
 	def on_start(self, conn):
-		self.logger.info(self.name + ' is started')
-		self.repository = MonDB.Repository()
+		super(Runner, self).on_start(connection)
+		self._repository = MonDB.Repository(Consts.MongoDBs.MAIN, Consts.MgColls.MONITOR)
 
 	def on_finish(self):
-		self.repository.close()
-		self.logger.info(self.name + ' is finished')
+		self._repository.close()
+		super(Runner, self).on_finish()
