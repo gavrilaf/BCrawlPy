@@ -194,6 +194,8 @@ class ContentReader(object):
 		r = requests.get("http://blogs.yandex.ru/search.rss", params=p)
 
 		self._monitor.content_http_request(Consts.Providers.YANDEX, None)  # Notify monitor about http request
+		self.logger.info('Yandex.ContentReader: (%s, %d)' % (r.url, r.status_code))
+		
 		if r.status_code != 200:
 			raise HttpError(r)
 

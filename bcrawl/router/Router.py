@@ -42,7 +42,7 @@ class Runner(MQ.BaseConsumer):
 		self.route_post(p)
 
 	def route_post(self, post):
-		if post.host in Const.Providers.CONTENT_PROVIDERS:
+		if post.host in Consts.Providers.CONTENT_PROVIDERS:
 			self.logger.info('%s (%s): routed to common collector' % (post.link, post.host))
 			self._common_queue.put(post)
 		else:
@@ -60,7 +60,7 @@ class Runner(MQ.BaseConsumer):
 	def on_start(self, connection):
 		super(Runner, self).on_start(connection)
 
-		self._db = PostInfoDB.Repository('bcrawl', 'post_info')
+		self._db = PostInfoDB.Repository(Consts.MongoDBs.MAIN, Consts.MgColls.POST_INFO)
 
 		self._host_detector = BlogHost.Detector()
 		self._dub_handler = Dublicates.Handler(self._db)

@@ -49,8 +49,6 @@ class Repository(object):
 	def get_query(self, name, success, scope):
 		query = copy.deepcopy(self.queries[name])
 
-		print name, success, scope
-
 		if success == True:
 			query['status'] = MonitorMsg.OK
 		else:
@@ -62,7 +60,7 @@ class Repository(object):
 		elif scope == SCOPE_HOUR:
 			t = datetime.datetime.utcnow() - datetime.timedelta(hours = 1)
 			query.update({"timestamp": {"$gte": t}})
-		print query
+		
 		return query
 
 	# http search
@@ -159,6 +157,16 @@ class Repository(object):
 					'error' : {
 						'hour' : self.yandex_search_requests(False, SCOPE_HOUR),
 						'day' : self.yandex_search_requests(False, SCOPE_DAY)
+					}
+				},
+				'twitter' : {
+					'sent' : {
+						'hour' : self.twitter_search_requests(True, SCOPE_HOUR),
+						'day' : self.twitter_search_requests(True, SCOPE_DAY)
+					},
+					'error' : {
+						'hour' : self.twitter_search_requests(False, SCOPE_HOUR),
+						'day' : self.twitter_search_requests(False, SCOPE_DAY)
 					}
 				}
 			},

@@ -23,8 +23,8 @@ class ContentReader(object):
 	def read_content(self, url):
 		r = requests.get(url)
 		
-		self._monitor.content_http_request(Consts.Providers.BLOGSPOT, url)  # Notify monitor about http request
-		self._logger.info('Blogspot.ContentReader: (%s, %d)' % (r.url, r.status_code))
+		self._monitor.content_http_request(Consts.Providers.YA_BLOG, url)  # Notify monitor about http request
+		self._logger.info('YaBlog.ContentReader: (%s, %d)' % (r.url, r.status_code))
 
 		if r.status_code != 200:
 			raise HttpError(r)
@@ -33,7 +33,7 @@ class ContentReader(object):
 
 	def _parse_response(self, r):
 		doc = BeautifulSoup(r.text.encode('utf-8'))
-		lst = doc.select('div .post-body.entry-content')
+		lst = doc.select('div .b-post-body')
 		if not lst:
 			return None
 		

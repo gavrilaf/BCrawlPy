@@ -40,8 +40,8 @@ class Providers(object):
 
 	@staticmethod
 	def content_provider_by_host(host):
-		if host in CONTENT_PROVIDERS:
-			return CONTENT_PROVIDERS[host]
+		if host in Providers.CONTENT_PROVIDERS:
+			return Providers.CONTENT_PROVIDERS[host]
 		return -1
 
 

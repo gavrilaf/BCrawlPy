@@ -54,8 +54,6 @@ class ContentCollectorTests(unittest.TestCase):
 
 		self.assertEqual(len(self.queue.items), 2)
 
-
-
 	def test_collect_blogspot(self):
 		reader = Blogspot.ContentReader(Consts.Runners.TEST, self.monitor)
 		content = reader.read_content('http://parasolkin.blogspot.ru/2013/11/2.html')

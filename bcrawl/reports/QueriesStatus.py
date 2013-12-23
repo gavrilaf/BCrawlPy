@@ -64,9 +64,12 @@ class Report(object):
 	def get_report(self, reports_db):
 		collection = reports_db[_REPORT_NAME]
 		report = collection.find_one()
-		if report:
-			return {'timestamp' : report['timestamp'].strftime('%d.%m.%Y %H:%M:%S'), 'content' : report['content'] }
+		
+		if report is None: # create empty
+			return {'timestamp' : 'Report not found', 'content' : {'objects' : []} }
+		
+		return {'timestamp' : report['timestamp'].strftime('%d.%m.%Y %H:%M:%S'), 'content' : report['content'] }
 
-		return None
+		
 
 

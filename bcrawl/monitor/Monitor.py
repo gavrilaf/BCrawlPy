@@ -11,7 +11,7 @@ class Runner(MQ.BaseConsumer):
 		self.logger.info(unicode(p))
 
 	def on_start(self, conn):
-		super(Runner, self).on_start(connection)
+		super(Runner, self).on_start(conn)
 		self._repository = MonDB.Repository(Consts.MongoDBs.MAIN, Consts.MgColls.MONITOR)
 
 	def on_finish(self):

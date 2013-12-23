@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from bcrawl.base import MQ, Consts
-from bcrawl.base import DB
 from bcrawl.monitor import MonSender
+from bcrawl.db import DB
 from bcrawl.db import Posts
 
 class PostPersister(MQ.BaseConsumer):
@@ -15,7 +15,7 @@ class PostPersister(MQ.BaseConsumer):
 		self.logger.info('Storing: ' + str(p.link))
 		
 		np = self._db.add_post(p)
-		self.monitor.post_persisted(np.id, np.link)
+		self._monitor.post_persisted(np.id, np.link)
 
 	def on_start(self, connection):
 		super(PostPersister, self).on_start(connection)

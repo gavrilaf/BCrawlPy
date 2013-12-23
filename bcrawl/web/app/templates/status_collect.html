@@ -35,6 +35,22 @@
               $('#ya-search-error-day').text(r.monitor.http.search.yandex.error.day)
               $('#ya-search-error-hour').text(r.monitor.http.search.yandex.error.hour)
 
+              $('#ya-search-sent-day').text(r.monitor.http.search.yandex.sent.day)
+              $('#ya-search-sent-hour').text(r.monitor.http.search.yandex.sent.hour)
+              $('#ya-search-error-day').text(r.monitor.http.search.yandex.error.day)
+              $('#ya-search-error-hour').text(r.monitor.http.search.yandex.error.hour)
+
+
+              $('#tw-search-sent-day').text(r.monitor.http.search.twitter.sent.day)
+              $('#tw-search-sent-hour').text(r.monitor.http.search.twitter.sent.hour)
+              $('#tw-search-error-day').text(r.monitor.http.search.twitter.error.day)
+              $('#tw-search-error-hour').text(r.monitor.http.search.twitter.error.hour)
+
+              $('#tw-search-sent-day').text(r.monitor.http.search.twitter.sent.day)
+              $('#tw-search-sent-hour').text(r.monitor.http.search.twitter.sent.hour)
+              $('#tw-search-error-day').text(r.monitor.http.search.twitter.error.day)
+              $('#tw-search-error-hour').text(r.monitor.http.search.twitter.error.hour)
+
               //Content yandex
 
               $('#ya-content-sent-day').text(r.monitor.http.content.yandex.sent.day)
@@ -56,22 +72,51 @@
               $('#vk-content-error-day').text(r.monitor.http.content.vk.error.day)
               $('#vk-content-error-hour').text(r.monitor.http.content.vk.error.hour)
 
+              //Content Ya.blogs
+
+              $('#ya-blog-content-sent-day').text(r.monitor.http.content.ya_blog.sent.day)
+              $('#ya-blog-content-sent-hour').text(r.monitor.http.content.ya_blog.sent.hour)
+              $('#ya-blog-content-error-day').text(r.monitor.http.content.ya_blog.error.day)
+              $('#ya-blog-content-error-hour').text(r.monitor.http.content.ya_blog.error.hour)
+
+              //Content Blogspot
+
+              $('#blogspot-content-sent-day').text(r.monitor.http.content.blogspot.sent.day)
+              $('#blogspot-content-sent-hour').text(r.monitor.http.content.blogspot.sent.hour)
+              $('#blogspot-content-error-day').text(r.monitor.http.content.blogspot.error.day)
+              $('#blogspot-content-error-hour').text(r.monitor.http.content.blogspot.error.hour)
+
+              //Content LJ.Rossia
+
+              $('#lj-rossia-content-sent-day').text(r.monitor.http.content.lj_rossia.sent.day)
+              $('#lj-rossia-content-sent-hour').text(r.monitor.http.content.lj_rossia.sent.hour)
+              $('#lj-rossia-content-error-day').text(r.monitor.http.content.lj_rossia.error.day)
+              $('#lj-rossia-content-error-hour').text(r.monitor.http.content.lj_rossia.error.hour)
+
               // Yandex http total
 
-              $('#ya-total-sent-hour').text(r.monitor.http.search.yandex.sent.hour+r.monitor.http.content.yandex.sent.hour)
-              $('#ya-total-sent-day').text(r.monitor.http.search.yandex.sent.day+r.monitor.http.content.yandex.sent.day)
-              //$('#ya-total-error-hour').text(r.monitor.http.search.yandex.error.hour+r.monitor.http.content.yandex.error.hour)
-              //$('#ya-total-error-day').text(r.monitor.http.search.yandex.error.day+r.monitor.http.content.yandex.error.day)
+              $('#ya-total-sent-hour').text(r.monitor.http.search.yandex.sent.hour
+                +r.monitor.http.content.yandex.sent.hour)
+              $('#ya-total-sent-day').text(r.monitor.http.search.yandex.sent.day
+                +r.monitor.http.content.yandex.sent.day)
+
+              $('#tw-total-sent-hour').text(r.monitor.http.search.twitter.sent.hour)
+              $('#tw-total-sent-day').text(r.monitor.http.search.twitter.sent.day)
 
               $('#vk-total-sent-hour').text(r.monitor.http.content.vk.sent.hour)
               $('#vk-total-sent-day').text(r.monitor.http.content.vk.sent.day)
-              //$('#vk-total-error-hour').text(r.monitor.http.content.vk.error.hour)
-              //$('#vk-total-error-day').text(r.monitor.http.content.vk.error.day)
-
+    
               $('#lj-total-sent-hour').text(r.monitor.http.content.lj.sent.hour)
               $('#lj-total-sent-day').text(r.monitor.http.content.lj.sent.day)
-              //$('#lj-total-error-hour').text(r.monitor.http.content.lj.error.hour)
-              //$('#lj-total-error-day').text(r.monitor.http.content.lj.error.day)
+    
+              $('#ya-blog-total-sent-hour').text(r.monitor.http.content.ya_blog.sent.hour)
+              $('#ya-blog-total-sent-day').text(r.monitor.http.content.ya_blog.sent.day)
+
+              $('#blogspot-total-sent-hour').text(r.monitor.http.content.blogspot.sent.hour)
+              $('#blogspot-total-sent-day').text(r.monitor.http.content.blogspot.sent.day)
+
+              $('#lj-rossia-total-sent-hour').text(r.monitor.http.content.lj_rossia.sent.hour)
+              $('#lj-rossia-total-sent-day').text(r.monitor.http.content.lj_rossia.sent.day)
 
               // Posts
  
@@ -251,7 +296,45 @@
                   <td id="vk-total-sent-hour">N/A</td>
                   <td id="vk-total-sent-day">N/A</td>
                 </tr>
-             
+                <tr>
+                  <td><b>Ya.ru blogs</b></td>
+                  <td />
+                  <td />
+                  <td id="ya-blog-content-sent-hour">N/A</td>
+                  <td id="ya-blog-content-sent-day">N/A</td>  
+                  <td />
+                  <td />
+                  <td id="ya-blog-content-error-hour">N/A</td>
+                  <td id="ya-blog-content-error-day">N/A</td>  
+                  <td id="ya-blog-total-sent-hour">N/A</td>
+                  <td id="ya-blog-total-sent-day">N/A</td>
+                </tr>
+                <tr>
+                  <td><b>Blogspot</b></td>
+                  <td />
+                  <td />
+                  <td id="blogspot-content-sent-hour">N/A</td>
+                  <td id="blogspot-content-sent-day">N/A</td>  
+                  <td />
+                  <td />
+                  <td id="blogspot-content-error-hour">N/A</td>
+                  <td id="blogspot-content-error-day">N/A</td>  
+                  <td id="blogspot-total-sent-hour">N/A</td>
+                  <td id="blogspot-total-sent-day">N/A</td>
+                </tr>
+                <tr>
+                  <td><b>LJ.Rossia</b></td>
+                  <td />
+                  <td />
+                  <td id="lj-rossia-content-sent-hour">N/A</td>
+                  <td id="lj-rossia-content-sent-day">N/A</td>  
+                  <td />
+                  <td />
+                  <td id="lj-rossia-content-error-hour">N/A</td>
+                  <td id="lj-rossia-content-error-day">N/A</td>  
+                  <td id="lj-rossia-total-sent-hour">N/A</td>
+                  <td id="lj-rossia-total-sent-day">N/A</td>
+                </tr>
               </tbody>
             </table> <!-- table -->         
          

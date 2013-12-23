@@ -2,12 +2,13 @@ from flask import render_template, jsonify
 from app import app
 from contextlib import closing
 
+from bcrawl.base import Consts
 from bcrawl.monitor import MonDB
 from bcrawl.reports import ReportContext, QueriesStatus, PostsTotal
 
 
 def get_monitoring_report():
-	with closing(MonDB.Repository()) as db:
+	with closing(MonDB.Repository(Consts.MongoDBs.MAIN, Consts.MgColls.MONITOR)) as db:
 		return db.status_full()
 
 def get_collecting_status_report():
