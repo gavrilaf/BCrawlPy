@@ -26,17 +26,15 @@ class Query(DB.Base):
     __tablename__ = 'Queries'
 
     id = Column(Integer, primary_key=True)
-    provider = Column(Integer)
     text = Column(String)
     start_from = Column(Date)
-    sobject_id = Column(Integer, ForeignKey('SObjects.id'))
+    sobject_id = Column(Integer, ForeignKey('SObjects.id'), nullable = False)
 
     day_queries = relationship('DayQuery', backref = backref('query', order_by='DayQuery.day'))
     posts = relationship('Post')
     
-    def __init__(self, sobj_id, provider, text, start_from):
+    def __init__(self, sobj_id, text, start_from):
         self.sobject_id = sobj_id
-        self.provider = provider
         self.text = text
         self.start_from = start_from
 
@@ -71,7 +69,7 @@ class DayQuery(DB.Base):
     STATUS_COMPLETED = 3
     
     id = Column(Integer, primary_key=True)
-    query_id = Column(Integer, ForeignKey('Queries.id'))
+    query_id = Column(Integer, ForeignKey('Queries.id'), nullable = False)
     day = Column(Date)
     status = Column(Integer)
 
@@ -94,11 +92,14 @@ class Post(DB.Base):
     publish_date = Column(DateTime)
     collected_date = Column(DateTime)
     
-    query_id = Column(Integer, ForeignKey('Queries.id'))
-    author_id = Column(Integer, ForeignKey('Authors.id'))
-    blog_host_id = Column(Integer, ForeignKey('BlogHosts.id'))
+    query_id = Column(Integer, ForeignKey('Queries.id'), nullable = False)
+    author_id = Column(Integer, ForeignKey('Authors.id'), nullable = False)
+    blog_host_id = Column(Integer, ForeignKey('BlogHosts.id'), nullable = False)
 
     content = relationship('PostContent', uselist=False, backref='post')
+
+    def __unicode__(self):
+        return u"Post(%d, %s, %s, %s, %s, %s, %s, %s)" % (self.id, self.title, self.link, self.publish_date, self.collected_date, self.query_id, self.author_id, self.blog_host_id)
 
 class Author(DB.Base):
     __tablename__ = 'Authors'
@@ -122,4 +123,4 @@ class PostContent(DB.Base):
     id = Column(Integer, primary_key=True)
     content = Column(String)
 
-    post_id = Column(Integer, ForeignKey('Posts.id'))
+    post_id = Column(Integer, ForeignKey('Posts.id'), nullable = False)

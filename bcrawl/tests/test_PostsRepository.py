@@ -3,9 +3,7 @@ import datetime
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from bcrawl.base import Consts, MQData
-from bcrawl.base import DB
-from bcrawl.runners import Posts
-from bcrawl.runners import SearchDB
+from bcrawl.db import DB, SearchDB, Posts
 
 
 class PostsRepositoryTests(unittest.TestCase):
@@ -80,8 +78,9 @@ class PostsRepositoryTests(unittest.TestCase):
 		collected = d2
 
 		post = self.rep.add_post(p)
-
 		self.assertIsNotNone(post)
+
+		post = self.rep.get_post_by_id(post.id)
 
 		self.assertEqual(post.title, 'test title')
 		self.assertEqual(post.link, 'test link')

@@ -3,9 +3,7 @@ import datetime
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from bcrawl.base import Consts
-from bcrawl.base import DB
-from bcrawl.runners import Queries
-from bcrawl.runners import SearchDB
+from bcrawl.db import DB, SearchDB, Queries
 
 
 class QueriesRepositoryTests(unittest.TestCase):
@@ -37,28 +35,27 @@ class QueriesRepositoryTests(unittest.TestCase):
 		sobj = self.rep.add_sobject('test')
 		start_day = datetime.date(2013, 10, 20)
 
-		query = self.rep.add_query(sobj.id, Consts.Providers.YANDEX, 'test-q', start_day)
+		query = self.rep.add_query(sobj.id, 'test-q', start_day)
 		self.assertIsNotNone(query)
 
 		lst1 = self.rep.get_queries_by_sobject(sobj.id)
-		lst2 = self.rep.get_queries_by_provider(Consts.Providers.YANDEX)
-
+		lst2 = self.rep.get_all_queries()
+	
 		self.assertEqual(len(lst1), 1)
 		self.assertEqual(len(lst2), 1)
-
+		
 		self.assertEqual(lst1[0].id, sobj.id)
-		self.assertEqual(lst1[0].provider, Consts.Providers.YANDEX)
 		self.assertEqual(lst1[0].text, 'test-q')
 		self.assertEqual(lst1[0].start_from, start_day)
 
 		self.assertEqual(lst2[0].id, sobj.id)
-		self.assertEqual(lst2[0].provider, Consts.Providers.YANDEX)
 		self.assertEqual(lst2[0].text, 'test-q')
 		self.assertEqual(lst2[0].start_from, start_day)
 
+
 	def test_DayQueries(self):
 		sobj = self.rep.add_sobject('test')
-		query = self.rep.add_query(sobj.id, Consts.Providers.YANDEX, 'test-q', datetime.date(2013, 10, 20))
+		query = self.rep.add_query(sobj.id, 'test-q', datetime.date(2013, 10, 20))
 
 		day1 = self.rep.add_day_query(query.id, datetime.date(2013, 10, 20))
 		day2 = self.rep.add_day_query(query.id, datetime.date(2013, 10, 21))
@@ -97,7 +94,7 @@ class QueriesRepositoryTests(unittest.TestCase):
 
 	def test_QueryEx(self):
 		o1 = self.rep.add_sobject('test')
-		q1 = self.rep.add_query(o1.id, Consts.Providers.YANDEX, 'test-q', datetime.date.today()-datetime.timedelta(2))
+		q1 = self.rep.add_query(o1.id, 'test-q', datetime.date.today()-datetime.timedelta(2))
 
 		q2 = self.rep.get_query_by_id(q1.id)
 

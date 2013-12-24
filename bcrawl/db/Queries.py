@@ -20,8 +20,8 @@ class Repository(object):
 	def get_sobject_by_id(self, id):
 		return self.session.query(SearchDB.SObject).filter_by(id=id).one()
 
-	def add_query(self, sobj_id, provider, text, start_day):
-		query = SearchDB.Query(sobj_id, provider, text, start_day)
+	def add_query(self, sobj_id, text, start_day):
+		query = SearchDB.Query(sobj_id, text, start_day)
 		self.session.add(query)
 		self.session.commit()
 		return query
@@ -29,11 +29,11 @@ class Repository(object):
 	def get_query_by_id(self, query_id):
 		return self.session.query(SearchDB.Query).filter_by(id=query_id).one()
 
+	def get_all_queries(self):
+		return self.session.query(SearchDB.Query).all()
+
 	def get_queries_by_sobject(self, sobj_id):
 		return self.session.query(SearchDB.Query).filter_by(sobject_id=sobj_id).all()
-
-	def get_queries_by_provider(self, provider):
-		return self.session.query(SearchDB.Query).filter_by(provider=provider).all()
 
 	def add_day_query(self, query_id, day):
 		day_query = SearchDB.DayQuery(query_id = query_id, day = day, status = SearchDB.DayQuery.STATUS_NEW)

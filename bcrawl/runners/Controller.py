@@ -83,7 +83,7 @@ class Runner(MQ.BaseConsumer):
 		return self._db.get_all_day_queries_with_status(SearchDB.DayQuery.STATUS_NEW)
 
 	def update_queries(self):
-		queries = self._db.get_queries_by_provider(Consts.Providers.YANDEX)
+		queries = self._db.get_all_queries()
 		for query in queries:
 			days = query.get_days_to_now()
 			for day in days:

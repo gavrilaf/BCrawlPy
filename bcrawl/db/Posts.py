@@ -74,3 +74,4 @@ class Repository(object):
 
 	def get_blog_host_by_name(self, name):
 		return self.session.query(SearchDB.BlogHost).filter_by(host=name).first()
+
