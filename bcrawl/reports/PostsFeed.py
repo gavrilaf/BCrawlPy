@@ -2,13 +2,26 @@
 # -*- coding: utf-8 -*-
 
 import logging
-from bcrawl.db import SearchDB
+import re
+from bcrawl.db import ContentReports
 
 _REPORT_NAME = "PostsFeed"
 
+def smart_truncate(text, max_length=100, suffix='...'):
+    """Returns a string of at most `max_length` characters, cutting
+    only at word-boundaries. If the string was truncated, `suffix`
+    will be appended.
+    """
+
+    if len(text) > max_length:
+        pattern = r'^(.{0,%d}\S)\s.*' % (max_length-len(suffix)-1)
+        return re.sub(pattern, r'\1' + suffix, text)
+    else:
+        return text
+
 class Generator(object):
-	def __init__(self, search_db):
-		self._db = search_db
+	def __init__(self, session):
+		self.repository = ContentReports.Repository(session)
 
 	@property
 	def name(self):
@@ -17,26 +30,24 @@ class Generator(object):
 	def calculate(self):
 		result = {'posts' : []}
 
-		objs = self.search_db.get_sobjects()
+		posts = self.repository.get_top_posts(20)
+		for post in posts:
+			content = post.PostContent.content
+			if content is None:
+				content = post.Post.title
+			jrep = {
+				'title' : post.Post.title,
+				'link' : post.Post.link,
+				'published' : post.Post.publish_date,
+				'collected' : post.Post.collected_date,
+				'content' : smart_truncate(content, 200, '...'),
+				'bloghot' : post.BlogHost.host,
+				'author' : post.Author.blog,
+				'object' : post.SObject.name
+			}
+
+			result['posts'].append(jrep)
 		
-		for obj in objs:
-			obj_rep = {'name' : obj.name, 'posts_total' : 0, 'queries' : []}
-
-			posts_total = 0
-			for query in obj.queries:
-				posts_count = len(query.posts)
-				posts_total += posts_count
-				
-				query_rep = {
-					'text' : query.text, 
-					'posts_total' : posts_count
-				}
-				obj_rep['queries'].append(query_rep)
-
-			obj_rep['posts_total'] = posts_total
-
-			result['objects'].append(obj_rep)
-
 		return result
 
 

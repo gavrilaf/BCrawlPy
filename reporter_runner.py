@@ -6,5 +6,5 @@ from bcrawl.reports import Reporter
 
 if __name__ == '__main__':
 	Log.config_logger(Consts.Runners.REPORTER)
-	p = Reporter.Runner('sqlite:///data/search.db', 'bcrawl-reports')
+	p = Reporter.Runner('sqlite:///data/search.db', Consts.MongoDBs.REPORTS)
 	p.run()

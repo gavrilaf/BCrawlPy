@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 
 import logging
-from bcrawl.db import SearchDB
+from bcrawl.db import Queries, SearchDB
 
 
 _REPORT_NAME = "QueriesStatus"
 
 class Generator(object):
-	def __init__(self, search_db):
-		self.search_db = search_db
+	def __init__(self, session):
+		self.search_db = Queries.Repository(session)
 
 	@property
 	def name(self):

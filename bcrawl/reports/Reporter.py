@@ -10,6 +10,7 @@ from bcrawl.db import Queries
 
 import QueriesStatus
 import PostsTotal
+import PostsFeed
 
 _IDLE_SHORT = 1
 _IDLE_LONG = 5
@@ -55,8 +56,9 @@ class Runner(MQ.BaseLoggedObj):
 
 		# Init reports list
 		self._reports = [
-			QueriesStatus.Generator(Queries.Repository(self._sql_db_context.session)),
-			PostsTotal.Generator(Queries.Repository(self._sql_db_context.session)),
+			QueriesStatus.Generator(self._sql_db_context.session),
+			PostsTotal.Generator(self._sql_db_context.session),
+			PostsFeed.Generator(self._sql_db_context.session)
 		]
 
 		self._counter = 0

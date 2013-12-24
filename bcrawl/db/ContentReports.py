@@ -16,4 +16,5 @@ class Repository(object):
 			.join(BlogHost) \
 			.join(PostContent) \
 			.order_by(Post.collected_date) \
-			.limit(limit)
+			.limit(limit) \
+			.all()

@@ -7,6 +7,7 @@ Base = declarative_base()
 class Context(object):
 
 	def __init__(self, db_path):
+		#_engine = create_engine(db_path, echo=True)
 		_engine = create_engine(db_path)
 		
 		Base.metadata.create_all(_engine)
