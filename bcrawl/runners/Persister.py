@@ -13,6 +13,7 @@ class PostPersister(MQ.BaseConsumer):
 
 	def process(self, p):
 		self.logger.info('Storing: ' + str(p.link))
+		print p.content
 		
 		np = self._db.add_post(p)
 		self._monitor.post_persisted(np.id, np.link)

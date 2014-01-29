@@ -21,7 +21,10 @@ class Post(object):
 
 			Uses dateutil.parse for converting string date to datetime. 
 		'''
-		return Post(query_id, provider, values_[0], values_[1], parser.parse(values_[2]), values_[3])
+		p = Post(query_id, provider, values_[0], values_[1], parser.parse(values_[2]), values_[3])
+		p.cached_copy = values_[4]
+
+		return p
 
 	def __init__(self, query_id, provider, link, title, publish_date, author):
 		self.query_id = query_id
@@ -35,6 +38,8 @@ class Post(object):
 
 		self.collected = datetime.datetime.utcnow()
 		self.status = Post.NEW
+
+		self.cached_copy = '' # Only for Yandex
 
 		self.content_error = False
 

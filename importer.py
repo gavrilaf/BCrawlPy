@@ -4,8 +4,8 @@
 import json
 from dateutil import parser
 from contextlib import closing
-from bcrawl.base import Consts, DB
-from bcrawl.runners import Queries
+from bcrawl.base import Consts
+from bcrawl.db import DB, Queries
 
 if __name__ == '__main__':
 
@@ -19,7 +19,7 @@ if __name__ == '__main__':
 				print unicode(sobj)
 
 				for query in obj['queries']:
-					pq = db.add_query(sobj.id, Consts.Providers.YANDEX, query['text'], parser.parse(query['start_date']))	
+					pq = db.add_query(sobj.id, query['text'], parser.parse(query['start_date']))	
 					print unicode(pq)
 			
 				print "-------------------------\n"

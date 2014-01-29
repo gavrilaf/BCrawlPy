@@ -33,6 +33,7 @@ class Runner(MQ.BaseProducer):
 				
 				if content is not None:
 					self.logger.info('Post %s. Content is collected' % p.link)
+					print content
 					p.content = content
 					out_queue.put(p)
 				else:	

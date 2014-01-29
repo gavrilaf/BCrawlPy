@@ -44,7 +44,7 @@ class Generator(object):
 					'in_progress' : len(in_progress),
 					'completed' : completed_count,
 					'in_progress_lst' : ', '.join(in_progress),
-					'progress' : ( 100 * completed_count ) / total
+					'progress' :  ( 100 * completed_count ) / total if total != 0 else 0
 				}
 
 				obj_day_query_total += total
@@ -52,7 +52,7 @@ class Generator(object):
 
 				obj_rep['queries'].append(query_rep)
 
-			obj_rep['progress'] = ( 100 * obj_day_query_completed ) / obj_day_query_total
+			obj_rep['progress'] = ( 100 * obj_day_query_completed ) / obj_day_query_total if obj_day_query_total != 0 else 0
 
 			result['objects'].append(obj_rep)
 

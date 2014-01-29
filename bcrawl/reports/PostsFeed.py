@@ -3,9 +3,23 @@
 
 import logging
 import re
+import datetime
+from dateutil.tz import *
+import pytz
 from bcrawl.db import ContentReports
 
 _REPORT_NAME = "PostsFeed"
+
+def unaware_utc_to_local(utc_dt):
+	utctz = pytz.UTC
+	utc_dt = utctz.localize(utc_dt)
+
+	localtz = pytz.timezone(tzlocal().tzname(datetime.datetime.now()))
+	return localtz.normalize(utc_dt.astimezone(localtz))
+
+def pretty_datetime(dt):
+	return dt.strftime("%d.%m.%Y %H:%M:%S")
+
 
 def smart_truncate(text, max_length=100, suffix='...'):
     """Returns a string of at most `max_length` characters, cutting
@@ -14,8 +28,9 @@ def smart_truncate(text, max_length=100, suffix='...'):
     """
 
     if len(text) > max_length:
-        pattern = r'^(.{0,%d}\S)\s.*' % (max_length-len(suffix)-1)
-        return re.sub(pattern, r'\1' + suffix, text)
+        #pattern = r'^(.{0,%d}\S)\s.*' % (max_length-len(suffix)-1)
+        #return re.sub(pattern, r'\1' + suffix, text)
+        return text[:max_length].rsplit(' ', 1)[0]+suffix
     else:
         return text
 
@@ -38,10 +53,10 @@ class Generator(object):
 			jrep = {
 				'title' : post.Post.title,
 				'link' : post.Post.link,
-				'published' : post.Post.publish_date,
-				'collected' : post.Post.collected_date,
-				'content' : smart_truncate(content, 200, '...'),
-				'bloghot' : post.BlogHost.host,
+				'published' : pretty_datetime(unaware_utc_to_local(post.Post.publish_date)),
+				'collected' : pretty_datetime(unaware_utc_to_local(post.Post.collected_date)),
+				'content' : smart_truncate(content, 500, '...'),
+				'bloghost' : post.BlogHost.host,
 				'author' : post.Author.blog,
 				'object' : post.SObject.name
 			}

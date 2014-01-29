@@ -25,8 +25,8 @@
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Отчёты<b class="caret"></b></a>
           <ul class="dropdown-menu">
-            <li class="active"><a href="#">Общий</a></li>
-            <li><a href="/reports/feed">Лента</a></li>
+            <li><a href="/reports/total">Общий</a></li>
+            <li class="active"><a href="#">Лента</a></li>
             <li><a href="#">ТОП-10</a></li>               
           </ul>
         </li>        
@@ -39,37 +39,33 @@
   </nav> 
 
   <div id="page-wraper">
-       <div class="row">
+    <div class="row">
       <div class="col-lg-12">
         <div class="panel panel-info">
           <div class="panel-heading">
             <h3 class="panel-title">
-              Постов собрано по объектам (<i>{{report.timestamp}}</i>)
+              Лента постов (<i>{{report.timestamp}}</i>)
             </h3>
           </div>
           <div class="panel-body">
-            <table class="table table-bordered table-condensed">
-              <thead>
-                <th>Объект</th>
-                <th>Запрос</th>
-                <th>Собрано постов</th>                
-              </thead>
-              <tbody>
-                {% for obj in report.content.objects %}
-                  <tr>
-                    <td><strong>{{obj.name}}<strong></td>
-                    <td />
-                    <td><strong>{{obj.posts_total}}</strong></td>
-                  </tr>
-                  {% for query in obj.queries %}
+            {% for post in report.content.posts %}
+              <div class="thumbnail">
+                <div class="caption">
+                  <h5 class="pull-right">{{post.published}}</h5>
+                  <h5>{{post.title}}</h5>
+                  <table class="table">
                     <tr>
-                      <td />
-                      <td>{{query.text}}</td>
-                      <td>{{query.posts_total}}</td>                      
-                  {% endfor %}
-                {% endfor %}
-              </tbody>
-            </table>
+                      <td>{{post.object}}</td>
+                      <td>{{post.author}}</td>
+                      <td>{{post.bloghost}}</td>
+                      <td>{{post.collected}}</td>
+                    </tr>
+                  </table>
+                  <p><a href="{{post.link}}">{{post.link}}</a></p>
+                  <p>{{post.content}}</p>
+                </div>
+              </div>
+            {% endfor %}
           </div> <!-- panel-body -->
         </div> <!-- panel -->
       </div>  <!-- col-lg-12 -->

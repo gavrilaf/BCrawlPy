@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from SearchDB import *
+from sqlalchemy import desc
 
 class Repository(object):
 
@@ -15,6 +16,6 @@ class Repository(object):
 			.join(Author) \
 			.join(BlogHost) \
 			.join(PostContent) \
-			.order_by(Post.collected_date) \
+			.order_by(desc(Post.collected_date)) \
 			.limit(limit) \
 			.all()

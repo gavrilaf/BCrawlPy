@@ -66,7 +66,7 @@ class Searcher(object):
 				'from_day' : self._query.day.day, 'from_month' : self._query.day.month, 'from_year' : self._query.day.year,
 				'to_day' : self._query.day.day, 'to_month' : self._query.day.month, 'to_year' : self._query.day.year}
 
-			response = requests.get("http://blogs.yandex.ru/search.rss", params=p)
+			response = requests.get("http://blogs.yandex.ru/mdlg.rss", params=p)
 		else:
 			response = requests.get(self._yandex_more)
 
@@ -87,7 +87,7 @@ class Searcher(object):
 			self._yandex_more = _element_value(xmldoc, 'yablogs:more')
 
 			# Hack: replace search.xml on search.rss
-			self._yandex_more = self._yandex_more.replace('search.xml', 'search.rss')
+			self._yandex_more = self._yandex_more.replace('search.xml', 'mdlg.rss')
 		except:
 			self._yandex_more = None
 			
@@ -102,7 +102,7 @@ class Searcher(object):
 		return posts
 
 	def _parse_item(self, item):
-		fields = ['link', 'title', 'pubDate', 'author']
+		fields = ['link', 'title', 'pubDate', 'author', 'cachedcopy']
 		values = []
 
 		for field in fields: 

@@ -59,7 +59,7 @@ class Query(DB.Base):
         return days
         
     def __unicode__(self):
-        return u"Query(%d, %d, %d, %s, %s)" % (self.id, self.sobject_id, self.provider, self.text, self.start_from)
+        return u"Query(%d, %d, %s, %s)" % (self.id, self.sobject_id, self.text, self.start_from)
 
 class DayQuery(DB.Base):
     __tablename__ = 'DayQueries'
